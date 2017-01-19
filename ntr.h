@@ -18,8 +18,10 @@
 
 #include <QObject>
 #include <QHostAddress>
-#include <QtNetwork/QTcpSocket>
+#include <QLocalSocket>
+#include <QtNetwork>
 #include <QThread>
+#include <stdint.h>
 
 class Ntr : public QObject
 {
@@ -35,10 +37,13 @@ public slots:
 
 private:
     void sendPacket(uint32_t type, uint32_t cmd, const uint32_t args[], uint32_t len);
-    int receivePacket(char* buf, int len);
+    QByteArray readJPEG();
+    void streamThread();
 
-    QTcpSocket sock;
+    QTcpSocket *cmd_sock;
+    QUdpSocket *rcv_sock;
     QHostAddress dsIP;
+    static quint16 dsPort;
 };
 
 #endif // NTR_H
