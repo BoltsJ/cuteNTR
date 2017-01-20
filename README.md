@@ -5,9 +5,30 @@ NTR CFW for 3DS.
 
 ## Current status
 
-Basic NTR debbuger functionality is implemented, but no capability of sending
-commands or reading packets is implemented yet.  Sending the command to start
-streaming works, but viewing the stream is not implemented yet.
+- Starting a stream is implemented!
+- The top screen and bottom screen are displayed in separate windows.
+- Scaling the windows is not supported.
+- Altering the stream settings is not yet implemented.
+- Stopping the stream is not implemented. To exit close _all_ windows or type
+  control-c into the terminal.
+
+## Building
+
+Requirements:
+- qmake
+- libQt5Core
+- libQt5Gui
+- libQt5Widgets
+- libQt5Network
+
+```
+$ qmake
+$ make
+$ ./cuteNTR
+```
+
+No installation script is provided yet, but the binary can be manually placed
+in your `$PATH`.
 
 ## Copyright
 
