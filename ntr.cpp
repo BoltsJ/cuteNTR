@@ -13,24 +13,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "ntr.h"
-#include <iostream>
 #include <QFile>
+#include <iostream>
+#include "ntr.h"
 
 Ntr::Ntr(QObject *parent) : QObject(parent)
 {
     cmd_sock = new QTcpSocket(this);
-    rcv_sock = new QUdpSocket(this);
 }
 
-quint16 Ntr::dsPort = 8000;
-
-void Ntr::set3DSip(QString ip)
+void Ntr::set3DSip(QHostAddress ip)
 {
     dsIP = ip;
 }
 
-bool Ntr::initStream()
+void Ntr::initStream()
+{
+    if (start3DSStream())
+        emit streamStarted();
+}
+
+bool Ntr::start3DSStream()
 {
     cmd_sock->connectToHost(dsIP, 8000);
     if(!cmd_sock->waitForConnected(5000)) {
@@ -53,8 +56,8 @@ bool Ntr::initStream()
     }
     std::cerr << "Successfully initialized stream!\n";
     cmd_sock->close();
-    QThread::QThread::sleep(3);
 
+    /*
     if (!rcv_sock->bind(QHostAddress::Any, 8001)) {
         std::cerr << "Failed to bind socket!\n";
         return false;
@@ -71,49 +74,10 @@ bool Ntr::initStream()
         file.write(data);
         file.close();
     }
+    */
 
     std::cerr << "Finished.\n";
     return true;
-}
-
-QByteArray Ntr::readJPEG()
-{
-    QByteArray jpeg;
-    QByteArray buf(2000, '\0');
-    int r;
-
-    int cur_id, expkt = 0;
-    rcv_sock->waitForReadyRead();
-    r = rcv_sock->readDatagram(buf.data(), 2000, &dsIP, &dsPort);
-    if (r <= 0) throw(0);
-    buf.truncate(r);
-    cur_id = buf.at(0);
-    do {
-        jpeg.append(buf.right(r-4));
-        if ((buf.at(1)&0xf0)==0x10) {
-            std::cerr << "Breaking\n";
-            break;
-        }
-        rcv_sock->waitForReadyRead();
-        buf.resize(2000);
-        r = rcv_sock->readDatagram(buf.data(), 2000, &dsIP, &dsPort);
-        if (r <= 0) throw(0);
-        buf.truncate(r);
-        ++expkt;
-        if (expkt != buf.at(3)) {
-            std::cerr << "Expected packet " << expkt << ", but got "
-                << (int)buf[3] << '\n';
-            return 0;
-        }
-    } while (buf.at(0) == cur_id);
-    std::cerr << "Frame done\n";
-
-    if (jpeg.at(0) != (char)0xff || jpeg.at(1) != (char)0xd8) {
-        std::cerr << "Dropping frame!\n";
-        return 0;
-    }
-
-    return jpeg;
 }
 
 void Ntr::sendPacket(uint32_t type, uint32_t cmd, const uint32_t args[], uint32_t nargs)

@@ -17,7 +17,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "ntr.h"
+#include <QtNetwork>
 
 namespace Ui {
 class MainWindow;
@@ -31,12 +31,15 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+signals:
+    void sendDSIp(QHostAddress);
+    void initStream();
+
 private slots:
     void on_connectButton_clicked();
 
 private:
     Ui::MainWindow *ui;
-    Ntr ntr;
 };
 
 #endif // MAINWINDOW_H

@@ -13,23 +13,36 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
+#ifndef STREAMWINDOW_H
+#define STREAMWINDOW_H
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
-{
-    ui->setupUi(this);
-}
+#include <QtGui>
 
-MainWindow::~MainWindow()
+class StreamWindow : public QWindow
 {
-    delete ui;
-}
+    Q_OBJECT
+public:
+    explicit StreamWindow(QWindow *parent = 0);
 
-void MainWindow::on_connectButton_clicked()
-{
-    emit sendDSIp(QHostAddress(ui->dsIP->displayText()));
-    emit initStream();
-}
+    virtual void render(QPainter *painter);
+
+signals:
+
+public slots:
+    void renderLater();
+    void renderNow();
+    void renderPixmap(QPixmap pixmap);
+
+protected:
+    bool event(QEvent *event) Q_DECL_OVERRIDE;
+
+    void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
+    void exposeEvent(QExposeEvent *event) Q_DECL_OVERRIDE;
+
+private:
+    QBackingStore *m_backingStore;
+    bool m_update_pending;
+    QPixmap pixmap;
+};
+
+#endif // STREAMWINDOW_H

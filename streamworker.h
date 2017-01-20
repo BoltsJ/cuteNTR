@@ -13,23 +13,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
+#ifndef STREAMWORKER_H
+#define STREAMWORKER_H
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
-{
-    ui->setupUi(this);
-}
+#include <QObject>
+#include <QPixmap>
+#include <QtNetwork>
 
-MainWindow::~MainWindow()
+class StreamWorker : public QObject
 {
-    delete ui;
-}
+    Q_OBJECT
+public:
+    StreamWorker();
+    ~StreamWorker();
 
-void MainWindow::on_connectButton_clicked()
-{
-    emit sendDSIp(QHostAddress(ui->dsIP->displayText()));
-    emit initStream();
-}
+signals:
+    void imageReady(QPixmap img);
+
+public slots:
+    void stream();
+    void set3DSip(QHostAddress ip);
+
+private:
+    QByteArray readJPEG();
+
+    QUdpSocket *rcv_sock;
+    QHostAddress dsIP;
+};
+
+#endif // STREAMWORKER_H

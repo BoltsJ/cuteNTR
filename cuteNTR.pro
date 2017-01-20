@@ -13,9 +13,13 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-        ntr.cpp
+        ntr.cpp \
+        streamworker.cpp \
+        streamwindow.cpp
 
 HEADERS  += mainwindow.h \
-        ntr.h
+        ntr.h \
+        streamworker.h \
+        streamwindow.h
 
 FORMS    += mainwindow.ui

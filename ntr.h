@@ -16,11 +16,11 @@
 #ifndef NTR_H
 #define NTR_H
 
-#include <QObject>
 #include <QHostAddress>
 #include <QLocalSocket>
-#include <QtNetwork>
+#include <QObject>
 #include <QThread>
+#include <QtNetwork>
 #include <stdint.h>
 
 class Ntr : public QObject
@@ -28,22 +28,20 @@ class Ntr : public QObject
     Q_OBJECT
 public:
     explicit Ntr(QObject *parent = 0);
-    void set3DSip(QString ip);
-    bool initStream();
+    bool start3DSStream();
 
 signals:
+    void streamStarted();
 
 public slots:
+    void set3DSip(QHostAddress ip);
+    void initStream();
 
 private:
     void sendPacket(uint32_t type, uint32_t cmd, const uint32_t args[], uint32_t len);
-    QByteArray readJPEG();
-    void streamThread();
 
     QTcpSocket *cmd_sock;
-    QUdpSocket *rcv_sock;
     QHostAddress dsIP;
-    static quint16 dsPort;
 };
 
 #endif // NTR_H
