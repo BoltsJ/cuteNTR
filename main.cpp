@@ -25,7 +25,11 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     MainWindow w;
-    StreamWindow s;
+    StreamWindow top;
+    StreamWindow bot;
+
+    top.setGeometry(0,0,400,240);
+    bot.setGeometry(0,0,320,240);
 
     Ntr ntr;
     QThread *t = new QThread;
@@ -33,20 +37,23 @@ int main(int argc, char *argv[])
     stream.moveToThread(t);
 
     qRegisterMetaType<QHostAddress>("QHostAddress");
-    QObject::connect(&w, &MainWindow::sendDSIp,
-            &ntr, &Ntr::set3DSip);
-    QObject::connect(&w, &MainWindow::sendDSIp,
-            &stream, &StreamWorker::set3DSip);
-    QObject::connect(&w, &MainWindow::initStream,
-            &ntr, &Ntr::initStream);
+    QObject::connect(&w, SIGNAL(sendDSIp(QHostAddress)),
+            &ntr, SLOT(set3DSip(QHostAddress)));
+    QObject::connect(&w, SIGNAL(sendDSIp(QHostAddress)),
+            &stream, SLOT(set3DSip(QHostAddress)));
+    QObject::connect(&w, SIGNAL(initStream()),
+            &ntr, SLOT(initStream()));
     QObject::connect(&ntr, SIGNAL(streamStarted()),
             t, SLOT(start()));
     QObject::connect(t, SIGNAL(started()),
             &stream, SLOT(stream()));
-    QObject::connect(&stream, SIGNAL(imageReady(QPixmap)),
-            &s, SLOT(renderPixmap(QPixmap)));
+    QObject::connect(&stream, SIGNAL(topImageReady(QPixmap)),
+            &top, SLOT(renderPixmap(QPixmap)));
+    QObject::connect(&stream, SIGNAL(botImageReady(QPixmap)),
+            &bot, SLOT(renderPixmap(QPixmap)));
 
-    s.show();
+    top.show();
+    bot.show();
     w.show();
 
     return a.exec();

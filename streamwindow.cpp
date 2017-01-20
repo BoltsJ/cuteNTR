@@ -22,7 +22,7 @@ StreamWindow::StreamWindow(QWindow *parent) :
     create();
     m_backingStore = new QBackingStore(this);
 
-    setGeometry(100, 100, 400, 240);
+    setGeometry(0, 0, 400, 240);
 }
 
 void StreamWindow::exposeEvent(QExposeEvent *)

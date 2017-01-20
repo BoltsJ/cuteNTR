@@ -28,14 +28,15 @@ public:
     ~StreamWorker();
 
 signals:
-    void imageReady(QPixmap img);
+    void topImageReady(QPixmap img);
+    void botImageReady(QPixmap img);
 
 public slots:
     void stream();
     void set3DSip(QHostAddress ip);
 
 private:
-    QByteArray readJPEG();
+    int readJPEG(QByteArray &jpeg);
 
     QUdpSocket *rcv_sock;
     QHostAddress dsIP;

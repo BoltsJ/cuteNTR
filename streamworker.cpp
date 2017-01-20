@@ -13,7 +13,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <iostream>
 #include "streamworker.h"
 
 StreamWorker::StreamWorker()
@@ -34,13 +33,19 @@ void StreamWorker::stream()
         return;
     }
     forever {
-        QByteArray data = readJPEG();
-        while (data.length() == 0) {
-            data = readJPEG();
+        QByteArray data;
+        int ret = -1;
+        while (ret == -1) {
+            data.resize(0);
+            ret = readJPEG(data);
         }
         QPixmap pixmap;
         pixmap.loadFromData(data);
-        emit imageReady(pixmap);
+        if (ret == 1) {
+            emit topImageReady(pixmap);
+        } else {
+            emit botImageReady(pixmap);
+        }
     }
 }
 
@@ -49,10 +54,10 @@ void StreamWorker::set3DSip(QHostAddress ip)
     dsIP = ip;
 }
 
-QByteArray StreamWorker::readJPEG()
+int StreamWorker::readJPEG(QByteArray &jpeg)
 {
     quint16 dsPort = 8000;
-    QByteArray jpeg;
+    //QByteArray jpeg;
     QByteArray buf(2000, '\0');
     int r;
 
@@ -65,7 +70,6 @@ QByteArray StreamWorker::readJPEG()
     do {
         jpeg.append(buf.right(r-4));
         if ((buf.at(1)&0xf0)==0x10) {
-            std::cerr << "Breaking\n";
             break;
         }
         rcv_sock->waitForReadyRead();
@@ -75,17 +79,15 @@ QByteArray StreamWorker::readJPEG()
         buf.truncate(r);
         ++expkt;
         if (expkt != buf.at(3)) {
-            std::cerr << "Expected packet " << expkt << ", but got "
-                << (int)buf[3] << '\n';
-            return 0;
+            return -1;
         }
     } while (buf.at(0) == cur_id);
-    std::cerr << "Frame done\n";
 
-    if (jpeg.at(0) != (char)0xff || jpeg.at(1) != (char)0xd8) {
-        std::cerr << "Dropping frame!\n";
-        return 0;
+    if (jpeg.at(0) != (char)0xff || jpeg.at(1) != (char)0xd8 ||
+            jpeg.at(jpeg.length()-2) != (char)0xff ||
+            jpeg.at(jpeg.length()-1) != (char)0xd9) {
+        return -1;
     }
 
-    return jpeg;
+    return (buf.at(1)&0x0f);
 }
