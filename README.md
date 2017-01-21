@@ -8,7 +8,7 @@ NTR CFW for 3DS.
 - Starting a stream is implemented!
 - The top screen and bottom screen are displayed in separate windows.
 - Scaling the windows is not supported.
-- Altering the stream settings is not yet implemented.
+- Stream settings can be set and will be saved when the stream is launched.
 - Stopping the stream is not implemented. To exit close _all_ windows or type
   control-c into the terminal.
 
