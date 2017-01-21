@@ -1,0 +1,12 @@
+image: gcc
+build:
+    before_script:
+     - apt update && apt install -y qt5-qmake libqt5core5a libqt5network5 libqt5gui5 libqt5widgets5 qtbase5-dev qttools5-dev
+    script:
+     - QT_SELECT=qt5 qmake&&make
+    artifacts:
+        paths:
+         - "cuteNTR"
+    cache:
+        paths:
+         - "*.o"
