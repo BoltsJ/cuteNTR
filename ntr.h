@@ -36,9 +36,11 @@ signals:
 public slots:
     void set3DSip(QHostAddress ip);
     void initStream();
+    void writeNFCPatch();
 
 private:
-    void sendPacket(uint32_t type, uint32_t cmd, const uint32_t args[], uint32_t len);
+    void sendPacket(uint32_t type, uint32_t cmd, const uint32_t args[],
+            uint32_t len);
 
     QTcpSocket *cmd_sock;
     QHostAddress dsIP;

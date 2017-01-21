@@ -33,6 +33,23 @@ void Ntr::initStream()
         emit streamStarted();
 }
 
+void Ntr::writeNFCPatch()
+{
+    cmd_sock->connectToHost(dsIP, 8000);
+    if(!cmd_sock->waitForConnected(5000)) {
+        std::cerr << "Failed to connect!\n";
+        return;
+    }
+    uint32_t args[17];
+    args[0] = 0x1a;
+    args[1] = 0x105ae4;
+    args[2] = 2;
+    args[16] = 2;
+    sendPacket(1, 10, args, 17);
+    cmd_sock->write(QByteArray((const char[]){ 0x70, 0x47 }, 2));
+    cmd_sock->flush();
+}
+
 bool Ntr::start3DSStream()
 {
     cmd_sock->connectToHost(dsIP, 8000);
@@ -40,13 +57,23 @@ bool Ntr::start3DSStream()
         std::cerr << "Failed to connect!\n";
         return false;
     }
-    cmd_sock->open(QIODevice::ReadWrite);
+    //cmd_sock->open(QIODevice::ReadWrite);
     std::cerr << "Connected!\n";
 
     /* Send the command to start streaming
      * This particular packet is derived from the NTRViewer source
      */
-    sendPacket(0, 901, (const uint32_t[]){ (1<<8)|5, 80, 105*1024*1024/8, 0 }, 4);
+    int mode = 1;
+    int priortyfactor = 5;
+    int jpegquality = 80;
+    int qosvalue = 105;
+    int qosbyte = qosvalue * 1024 * 1024 / 8;
+    uint32_t args[4];
+    args[0] = (mode<<8)|priortyfactor;
+    args[1] = jpegquality;
+    args[2] = qosbyte;
+    args[3] = 0;
+    sendPacket(0, 901, args, 4);
     cmd_sock->close();
     QThread::QThread::sleep(3);
     cmd_sock->connectToHost(dsIP, 8000);
@@ -56,31 +83,14 @@ bool Ntr::start3DSStream()
     }
     std::cerr << "Successfully initialized stream!\n";
     cmd_sock->close();
-
-    /*
-    if (!rcv_sock->bind(QHostAddress::Any, 8001)) {
-        std::cerr << "Failed to bind socket!\n";
-        return false;
-    }
-
-    for (int i = 0; i < 100; ++i) {
-        QFile file(QString("%1.jpg").arg(i));
-        file.open(QIODevice::WriteOnly);
-
-        QByteArray data = readJPEG();
-        while (data.length() == 0)
-            data = readJPEG();
-
-        file.write(data);
-        file.close();
-    }
-    */
+    writeNFCPatch();
 
     std::cerr << "Finished.\n";
     return true;
 }
 
-void Ntr::sendPacket(uint32_t type, uint32_t cmd, const uint32_t args[], uint32_t nargs)
+void Ntr::sendPacket(uint32_t type, uint32_t cmd, const uint32_t args[],
+        uint32_t nargs)
 {
     char buf[84];
     for (int i = 0; i < 84; ++i) buf[i] = 0;

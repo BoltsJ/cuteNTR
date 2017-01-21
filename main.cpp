@@ -14,6 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <QApplication>
+#include <QSettings>
 #include <QThread>
 #include "mainwindow.h"
 #include "ntr.h"
@@ -23,13 +24,25 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+    a.setApplicationName("cutentr");
+    a.setApplicationDisplayName("cuteNTR");
+    a.setApplicationVersion("v0.0.0");
+
+    QSettings s(qApp->applicationName());
+    s.setValue("foo", "bar");
 
     MainWindow w;
     StreamWindow top;
     StreamWindow bot;
 
-    top.setGeometry(0,0,400,240);
-    bot.setGeometry(0,0,320,240);
+    top.resize(400,240);
+    top.setMinimumSize(QSize(400,240));
+    top.setMaximumSize(QSize(400,240));
+    top.setTitle("Top screen - cuteNTR");
+    bot.resize(320,240);
+    bot.setMinimumSize(QSize(320,240));
+    bot.setMaximumSize(QSize(320,240));
+    bot.setTitle("Bottom screen - cuteNTR");
 
     Ntr ntr;
     QThread *t = new QThread;
