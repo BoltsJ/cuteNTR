@@ -37,7 +37,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_connectButton_clicked()
 {
-    emit sendDSIp(QHostAddress(ui->dsIP->text()));
-    emit initStream();
     s.setValue(CFG_IP, ui->dsIP->text());
+    emit initStream();
 }

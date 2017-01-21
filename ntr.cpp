@@ -17,14 +17,15 @@
 #include <iostream>
 #include "ntr.h"
 
-Ntr::Ntr(QObject *parent) : QObject(parent)
-{
-    cmd_sock = new QTcpSocket(this);
+namespace {
+const char* CFG_IP = "ipAddress";
 }
 
-void Ntr::set3DSip(QHostAddress ip)
+Ntr::Ntr(QObject *parent) :
+    QObject(parent),
+    s(qApp->applicationName())
 {
-    dsIP = ip;
+    cmd_sock = new QTcpSocket(this);
 }
 
 void Ntr::initStream()
@@ -35,6 +36,7 @@ void Ntr::initStream()
 
 void Ntr::writeNFCPatch()
 {
+    QHostAddress dsIP(s.value(CFG_IP).toString());
     cmd_sock->connectToHost(dsIP, 8000);
     if(!cmd_sock->waitForConnected(5000)) {
         std::cerr << "Failed to connect!\n";
@@ -52,6 +54,7 @@ void Ntr::writeNFCPatch()
 
 bool Ntr::start3DSStream()
 {
+    QHostAddress dsIP(s.value(CFG_IP).toString());
     cmd_sock->connectToHost(dsIP, 8000);
     if(!cmd_sock->waitForConnected(5000)) {
         std::cerr << "Failed to connect!\n";

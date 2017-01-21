@@ -19,6 +19,7 @@
 #include <QHostAddress>
 #include <QLocalSocket>
 #include <QObject>
+#include <QSettings>
 #include <QThread>
 #include <QtNetwork>
 #include <stdint.h>
@@ -34,7 +35,6 @@ signals:
     void streamStarted();
 
 public slots:
-    void set3DSip(QHostAddress ip);
     void initStream();
     void writeNFCPatch();
 
@@ -42,8 +42,8 @@ private:
     void sendPacket(uint32_t type, uint32_t cmd, const uint32_t args[],
             uint32_t len);
 
+    QSettings s;
     QTcpSocket *cmd_sock;
-    QHostAddress dsIP;
 };
 
 #endif // NTR_H

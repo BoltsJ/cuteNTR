@@ -33,7 +33,6 @@ public:
     ~MainWindow();
 
 signals:
-    void sendDSIp(QHostAddress);
     void initStream();
 
 private slots:

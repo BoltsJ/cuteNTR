@@ -33,13 +33,12 @@ signals:
 
 public slots:
     void stream();
-    void set3DSip(QHostAddress ip);
 
 private:
     int readJPEG(QByteArray &jpeg);
 
     QUdpSocket *rcv_sock;
-    QHostAddress dsIP;
+    QSettings s;
 };
 
 #endif // STREAMWORKER_H

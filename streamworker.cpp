@@ -15,7 +15,12 @@
  */
 #include "streamworker.h"
 
-StreamWorker::StreamWorker()
+namespace {
+const char* CFG_IP = "ipAddress";
+}
+
+StreamWorker::StreamWorker() :
+    s(qApp->applicationName())
 {
     rcv_sock = new QUdpSocket(this);
 }
@@ -49,15 +54,10 @@ void StreamWorker::stream()
     }
 }
 
-void StreamWorker::set3DSip(QHostAddress ip)
-{
-    dsIP = ip;
-}
-
 int StreamWorker::readJPEG(QByteArray &jpeg)
 {
+    QHostAddress dsIP(s.value(CFG_IP).toString());
     quint16 dsPort = 8000;
-    //QByteArray jpeg;
     QByteArray buf(2000, '\0');
     int r;
 

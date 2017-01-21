@@ -45,11 +45,6 @@ int main(int argc, char *argv[])
     StreamWorker stream;
     stream.moveToThread(t);
 
-    qRegisterMetaType<QHostAddress>("QHostAddress");
-    QObject::connect(&w, SIGNAL(sendDSIp(QHostAddress)),
-            &ntr, SLOT(set3DSip(QHostAddress)));
-    QObject::connect(&w, SIGNAL(sendDSIp(QHostAddress)),
-            &stream, SLOT(set3DSip(QHostAddress)));
     QObject::connect(&w, SIGNAL(initStream()),
             &ntr, SLOT(initStream()));
     QObject::connect(&ntr, SIGNAL(streamStarted()),
