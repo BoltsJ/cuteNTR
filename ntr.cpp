@@ -18,7 +18,15 @@
 #include "ntr.h"
 
 namespace {
-const char* CFG_IP = "ipAddress";
+const char* CFG_IP      = "ipAddress";
+const char* CFG_PRIMODE = "priorityMode";
+const bool  DEF_PRIMODE = true;
+const char* CFG_PRIFACT = "priorityFactor";
+const int   DEF_PRIFACT = 5;
+const char* CFG_JPGQUAL = "jpegQuality";
+const int   DEF_JPGQUAL = 80;
+const char* CFG_QOSVAL  = "qosValue";
+const int   DEF_QOSVAL  = 105;
 }
 
 Ntr::Ntr(QObject *parent) :
@@ -66,10 +74,10 @@ bool Ntr::start3DSStream()
     /* Send the command to start streaming
      * This particular packet is derived from the NTRViewer source
      */
-    int mode = 1;
-    int priortyfactor = 5;
-    int jpegquality = 80;
-    int qosvalue = 105;
+    int mode = s.value(CFG_PRIMODE, DEF_PRIMODE).toInt();
+    int priortyfactor = s.value(CFG_PRIFACT, DEF_PRIFACT).toInt();
+    int jpegquality = s.value(CFG_JPGQUAL, DEF_JPGQUAL).toInt();
+    int qosvalue = s.value(CFG_QOSVAL, DEF_QOSVAL).toInt();
     int qosbyte = qosvalue * 1024 * 1024 / 8;
     uint32_t args[4];
     args[0] = (mode<<8)|priortyfactor;
