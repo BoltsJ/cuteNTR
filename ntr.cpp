@@ -93,7 +93,7 @@ void Ntr::sendPacket(uint32_t type, uint32_t cmd, const uint32_t args[],
         uint32_t nargs)
 {
     char buf[84];
-    for (int i = 0; i < 84; ++i) buf[i] = 0;
+    memset((void*)buf, 0, 84);
     uint32_t magic = 0x12345678;
     memcpy(buf, &magic, sizeof(magic));
     ((uint32_t*)buf)[1] = 1;

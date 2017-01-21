@@ -17,6 +17,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QSettings>
 #include <QtNetwork>
 
 namespace Ui {
@@ -40,6 +41,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    QSettings s;
 };
 
 #endif // MAINWINDOW_H

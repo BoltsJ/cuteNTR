@@ -16,11 +16,18 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+namespace {
+const char* CFG_IP = "ipAddress";
+const char* DEF_IP = "255.255.255.255";
+}
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    s(qApp->applicationName())
 {
     ui->setupUi(this);
+    ui->dsIP->setText(s.value(CFG_IP, DEF_IP).toString());
 }
 
 MainWindow::~MainWindow()
@@ -30,6 +37,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_connectButton_clicked()
 {
-    emit sendDSIp(QHostAddress(ui->dsIP->displayText()));
+    emit sendDSIp(QHostAddress(ui->dsIP->text()));
     emit initStream();
+    s.setValue(CFG_IP, ui->dsIP->text());
 }

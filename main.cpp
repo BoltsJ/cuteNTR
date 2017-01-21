@@ -14,7 +14,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <QApplication>
-#include <QSettings>
 #include <QThread>
 #include "mainwindow.h"
 #include "ntr.h"
@@ -27,9 +26,6 @@ int main(int argc, char *argv[])
     a.setApplicationName("cutentr");
     a.setApplicationDisplayName("cuteNTR");
     a.setApplicationVersion("v0.0.0");
-
-    QSettings s(qApp->applicationName());
-    s.setValue("foo", "bar");
 
     MainWindow w;
     StreamWindow top;
