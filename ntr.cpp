@@ -42,22 +42,39 @@ void Ntr::initStream()
         emit streamStarted();
 }
 
-void Ntr::writeNFCPatch()
+void Ntr::writeNFCPatch(int type)
 {
+    std::cerr << "Writing NFC patch...\n";
     QHostAddress dsIP(s.value(CFG_IP).toString());
     cmd_sock->connectToHost(dsIP, 8000);
     if(!cmd_sock->waitForConnected(5000)) {
         std::cerr << "Failed to connect!\n";
         return;
     }
+    uint32_t pid;
+    uint32_t offset;
+    QByteArray patch;
+    switch(type) {
+        case 1: // Pokemon S&M
+            pid = 0; // Write a helper function
+            offset = 0x3e14c0;
+            patch.append("\xe3\xa0\x10\x00", 4);
+        default:
+            pid = 0x1a;
+            offset = 0x105ae4;
+            patch.append("\x70\x47", 2);
+    }
     uint32_t args[17];
-    args[0] = 0x1a;
-    args[1] = 0x105ae4;
-    args[2] = 2;
-    args[16] = 2;
+    memset((void*)args, 0, 68);
+    args[0] = pid;
+    args[1] = offset;
+    args[2] = patch.length();
+    args[16] = patch.length();
     sendPacket(1, 10, args, 17);
-    cmd_sock->write(QByteArray((const char[]){ 0x70, 0x47 }, 2));
+    cmd_sock->write(patch);
     cmd_sock->flush();
+    cmd_sock->close();
+    std::cerr << patch.length() << " bytes written.\n";
 }
 
 bool Ntr::start3DSStream()
@@ -94,7 +111,6 @@ bool Ntr::start3DSStream()
     }
     std::cerr << "Successfully initialized stream!\n";
     cmd_sock->close();
-    writeNFCPatch();
 
     std::cerr << "Finished.\n";
     return true;

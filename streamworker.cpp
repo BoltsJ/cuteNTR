@@ -41,7 +41,7 @@ void StreamWorker::stream()
         QByteArray data;
         int ret = -1;
         while (ret == -1) {
-            data.resize(0);
+            data.clear();
             ret = readJPEG(data);
         }
         QPixmap pixmap;
@@ -83,9 +83,8 @@ int StreamWorker::readJPEG(QByteArray &jpeg)
         }
     } while (buf.at(0) == cur_id);
 
-    if (jpeg.at(0) != (char)0xff || jpeg.at(1) != (char)0xd8 ||
-            jpeg.at(jpeg.length()-2) != (char)0xff ||
-            jpeg.at(jpeg.length()-1) != (char)0xd9) {
+    if (jpeg.left(2) != QByteArray("\xff\xd8") ||
+            jpeg.right(2) != QByteArray("\xff\xd9")) {
         return -1;
     }
 

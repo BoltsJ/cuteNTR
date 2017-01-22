@@ -32,11 +32,18 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+protected:
+    void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
+
 signals:
     void initStream();
+    void sendNfcPatch(int);
 
 private slots:
     void on_connectButton_clicked();
+    void on_dsIP_returnPressed();
+
+    void on_sendNfcPatch_clicked();
 
 private:
     Ui::MainWindow *ui;

@@ -31,11 +31,9 @@ int main(int argc, char *argv[])
     StreamWindow top;
     StreamWindow bot;
 
-    top.resize(400,240);
     top.setMinimumSize(QSize(400,240));
     top.setMaximumSize(QSize(400,240));
     top.setTitle("Top screen - cuteNTR");
-    bot.resize(320,240);
     bot.setMinimumSize(QSize(320,240));
     bot.setMaximumSize(QSize(320,240));
     bot.setTitle("Bottom screen - cuteNTR");
@@ -47,17 +45,21 @@ int main(int argc, char *argv[])
 
     QObject::connect(&w, SIGNAL(initStream()),
             &ntr, SLOT(initStream()));
+    QObject::connect(&w, SIGNAL(sendNfcPatch(int)),
+            &ntr, SLOT(writeNFCPatch(int)));
     QObject::connect(&ntr, SIGNAL(streamStarted()),
             t, SLOT(start()));
     QObject::connect(t, SIGNAL(started()),
             &stream, SLOT(stream()));
+    QObject::connect(&ntr, SIGNAL(streamStarted()),
+            &top, SLOT(show()));
+    QObject::connect(&ntr, SIGNAL(streamStarted()),
+            &bot, SLOT(show()));
     QObject::connect(&stream, SIGNAL(topImageReady(QPixmap)),
             &top, SLOT(renderPixmap(QPixmap)));
     QObject::connect(&stream, SIGNAL(botImageReady(QPixmap)),
             &bot, SLOT(renderPixmap(QPixmap)));
 
-    top.show();
-    bot.show();
     w.show();
 
     return a.exec();

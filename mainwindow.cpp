@@ -52,9 +52,16 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::closeEvent(QCloseEvent*)
+{
+    qApp->quit();
+}
+
 void MainWindow::on_connectButton_clicked()
 {
     ui->connectButton->setEnabled(false);
+    ui->dsIP->setEnabled(false);
+    ui->centralWidget->repaint();
 
     // Save options
     s.setValue(CFG_IP, ui->dsIP->text());
@@ -64,4 +71,14 @@ void MainWindow::on_connectButton_clicked()
     s.setValue(CFG_QOSVAL, ui->qosValue->value());
 
     emit initStream();
+}
+
+void MainWindow::on_dsIP_returnPressed()
+{
+    on_connectButton_clicked();
+}
+
+void MainWindow::on_sendNfcPatch_clicked()
+{
+    emit sendNfcPatch(ui->nfcPatchType->currentIndex());
 }

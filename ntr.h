@@ -36,7 +36,7 @@ signals:
 
 public slots:
     void initStream();
-    void writeNFCPatch();
+    void writeNFCPatch(int type);
 
 private:
     void sendPacket(uint32_t type, uint32_t cmd, const uint32_t args[],
