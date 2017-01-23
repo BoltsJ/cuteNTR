@@ -27,6 +27,10 @@ const char* CFG_PRIMODE = "priorityMode";
 const bool  DEF_PRIMODE = true;
 const char* CFG_QOSVAL  = "qosValue";
 const int   DEF_QOSVAL  = 105;
+const char* CFG_TSCALE  = "topScale";
+const float DEF_TSCALE  = 1;
+const char* CFG_BSCALE  = "botScale";
+const float DEF_BSCALE  = 1;
 }
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -42,6 +46,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->priMode->setCurrentIndex(s.value(CFG_PRIMODE, DEF_PRIMODE).toBool());
     ui->priFact->setValue(s.value(CFG_PRIFACT, DEF_PRIFACT).toInt());
     ui->jpegQuality->setValue(s.value(CFG_JPGQUAL, DEF_JPGQUAL).toInt());
+    ui->tScale->setValue(s.value(CFG_TSCALE, DEF_TSCALE).toFloat());
+    ui->bScale->setValue(s.value(CFG_BSCALE, DEF_BSCALE).toFloat());
 
     // Fix window size
     setMaximumSize(minimumSize());
@@ -81,4 +87,16 @@ void MainWindow::on_dsIP_returnPressed()
 void MainWindow::on_sendNfcPatch_clicked()
 {
     emit sendNfcPatch(ui->nfcPatchType->currentIndex());
+}
+
+void MainWindow::on_tScale_valueChanged(double scale)
+{
+    s.setValue(CFG_TSCALE, scale);
+    emit topScaleChanged(scale);
+}
+
+void MainWindow::on_bScale_valueChanged(double scale)
+{
+    s.setValue(CFG_BSCALE, scale);
+    emit botScaleChanged(scale);
 }

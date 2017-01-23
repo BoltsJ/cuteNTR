@@ -38,11 +38,14 @@ protected:
 signals:
     void initStream();
     void sendNfcPatch(int);
+    void topScaleChanged(float);
+    void botScaleChanged(float);
 
 private slots:
     void on_connectButton_clicked();
     void on_dsIP_returnPressed();
-
+    void on_tScale_valueChanged(double scale);
+    void on_bScale_valueChanged(double scale);
     void on_sendNfcPatch_clicked();
 
 private:

@@ -28,14 +28,10 @@ int main(int argc, char *argv[])
     a.setApplicationVersion("v0.0.0");
 
     MainWindow w;
-    StreamWindow top;
-    StreamWindow bot;
+    StreamWindow top(true);
+    StreamWindow bot(false);
 
-    top.setMinimumSize(QSize(400,240));
-    top.setMaximumSize(QSize(400,240));
     top.setTitle("Top screen - cuteNTR");
-    bot.setMinimumSize(QSize(320,240));
-    bot.setMaximumSize(QSize(320,240));
     bot.setTitle("Bottom screen - cuteNTR");
 
     Ntr ntr;
@@ -47,14 +43,18 @@ int main(int argc, char *argv[])
             &ntr, SLOT(initStream()));
     QObject::connect(&w, SIGNAL(sendNfcPatch(int)),
             &ntr, SLOT(writeNFCPatch(int)));
+    QObject::connect(&w, SIGNAL(topScaleChanged(float)),
+            &top, SLOT(setScale(float)));
+    QObject::connect(&w, SIGNAL(botScaleChanged(float)),
+            &bot, SLOT(setScale(float)));
     QObject::connect(&ntr, SIGNAL(streamStarted()),
             t, SLOT(start()));
-    QObject::connect(t, SIGNAL(started()),
-            &stream, SLOT(stream()));
     QObject::connect(&ntr, SIGNAL(streamStarted()),
             &top, SLOT(show()));
     QObject::connect(&ntr, SIGNAL(streamStarted()),
             &bot, SLOT(show()));
+    QObject::connect(t, SIGNAL(started()),
+            &stream, SLOT(stream()));
     QObject::connect(&stream, SIGNAL(topImageReady(QPixmap)),
             &top, SLOT(renderPixmap(QPixmap)));
     QObject::connect(&stream, SIGNAL(botImageReady(QPixmap)),

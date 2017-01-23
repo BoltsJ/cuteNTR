@@ -2,6 +2,14 @@
 <ui version="4.0">
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>351</width>
+    <height>347</height>
+   </rect>
+  </property>
   <property name="windowTitle">
    <string>cuteNTR</string>
   </property>
@@ -26,7 +34,7 @@
      </layout>
     </item>
     <item>
-     <widget class="Line" name="line">
+     <widget class="Line" name="line_1">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
@@ -48,7 +56,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QLabel" name="label">
+       <widget class="QLabel" name="l_priFact">
         <property name="text">
          <string>Priority Factor</string>
         </property>
@@ -82,7 +90,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QLabel" name="label_4">
+       <widget class="QLabel" name="l_priMode">
         <property name="text">
          <string>Screen Priority</string>
         </property>
@@ -120,7 +128,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QLabel" name="label_2">
+       <widget class="QLabel" name="l_jpeg">
         <property name="text">
          <string>JPEG Quality</string>
         </property>
@@ -154,7 +162,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QLabel" name="label_3">
+       <widget class="QLabel" name="l_qos">
         <property name="text">
          <string>QoS Value</string>
         </property>
@@ -164,6 +172,51 @@
        <widget class="QSpinBox" name="qosValue">
         <property name="maximum">
          <number>105</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_7">
+      <item>
+       <spacer name="horizontalSpacer_6">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QLabel" name="l_tScale">
+        <property name="text">
+         <string>Top Scale</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QDoubleSpinBox" name="tScale">
+        <property name="singleStep">
+         <double>0.100000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="l_bScale">
+        <property name="text">
+         <string>Bot Scale</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QDoubleSpinBox" name="bScale">
+        <property name="singleStep">
+         <double>0.100000000000000</double>
         </property>
        </widget>
       </item>
@@ -192,7 +245,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QLabel" name="label_5">
+       <widget class="QLabel" name="l_nfc">
         <property name="text">
          <string>NFC Patch</string>
         </property>

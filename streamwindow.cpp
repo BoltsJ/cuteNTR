@@ -15,11 +15,28 @@
  */
 #include "streamwindow.h"
 
-StreamWindow::StreamWindow(QWindow *parent) :
+namespace {
+const char* CFG_TSCALE  = "topScale";
+const float DEF_TSCALE  = 1;
+const char* CFG_BSCALE  = "botScale";
+const float DEF_BSCALE  = 1;
+}
+
+StreamWindow::StreamWindow(bool top, QWindow *parent) :
     QWindow(parent),
-    m_update_pending(false)
+    m_update_pending(false),
+    b_size(320, 240)
 {
     create();
+    QSettings s(qApp->applicationName());
+    scale = s.value(CFG_BSCALE, DEF_BSCALE).toFloat();
+    if (top) {
+        b_size.setWidth(400);
+        scale = s.value(CFG_TSCALE, DEF_TSCALE).toFloat();
+    }
+    resize(b_size*scale);
+    setMinimumSize(b_size*scale);
+    setMaximumSize(b_size*scale);
     m_backingStore = new QBackingStore(this);
 }
 
@@ -56,7 +73,9 @@ void StreamWindow::renderNow()
 void StreamWindow::render(QPainter *painter)
 {
     QTransform xform(0, -1, 1, 0, 0, 0);
-    painter->drawPixmap(0,0,pixmap.transformed(xform));
+    QPixmap scr = pixmap.transformed(xform);
+    scr = scr.scaledToWidth(b_size.width()*scale, Qt::SmoothTransformation);
+    painter->drawPixmap(0,0,scr);
 }
 
 void StreamWindow::renderLater()
@@ -71,6 +90,15 @@ void StreamWindow::renderPixmap(QPixmap pixmap)
 {
     this->pixmap = pixmap;
     renderLater();
+}
+
+void StreamWindow::setScale(float s)
+{
+    scale = s;
+    setMaximumSize(b_size*scale);
+    setMinimumSize(b_size*scale);
+    resize(b_size*scale);
+    requestUpdate();
 }
 
 bool StreamWindow::event(QEvent *event)

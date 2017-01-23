@@ -22,7 +22,7 @@ class StreamWindow : public QWindow
 {
     Q_OBJECT
 public:
-    explicit StreamWindow(QWindow *parent = 0);
+    explicit StreamWindow(bool top, QWindow *parent = 0);
 
     virtual void render(QPainter *painter);
 
@@ -32,6 +32,7 @@ public slots:
     void renderLater();
     void renderNow();
     void renderPixmap(QPixmap pixmap);
+    void setScale(float s);
 
 protected:
     bool event(QEvent *event) Q_DECL_OVERRIDE;
@@ -43,6 +44,8 @@ private:
     QBackingStore *m_backingStore;
     bool m_update_pending;
     QPixmap pixmap;
+    QSize b_size;
+    float scale;
 };
 
 #endif // STREAMWINDOW_H
