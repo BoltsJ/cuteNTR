@@ -25,11 +25,8 @@ Requirements:
 $ qmake
 $ make
 $ sudo make install
-$ cuteNTR
+$ cutentr
 ```
-
-No installation script is provided yet, but the binary can be manually placed
-in your `$PATH`.
 
 ## Copyright
 

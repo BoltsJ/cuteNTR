@@ -6,7 +6,7 @@ build:
      - QT_SELECT=qt5 qmake&&make
     artifacts:
         paths:
-         - "cuteNTR"
+         - "cutentr"
     cache:
         paths:
          - "*.o"

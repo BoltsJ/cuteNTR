@@ -6,12 +6,12 @@
 
 QT       += core gui network widgets
 
-TARGET = cuteNTR
+TARGET = cutentr
 TEMPLATE = app
+VERSION = -0.0.0
 
 BUILD_DIR = $$shadowed($$PWD)
 isEmpty(PREFIX): PREFIX = /usr/local
-DESTDIR = $$BUILD_DIR/bin
 target.path = $$PREFIX/bin
 INSTALLS += target
 
