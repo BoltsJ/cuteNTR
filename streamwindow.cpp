@@ -98,7 +98,6 @@ void StreamWindow::setScale(float s)
     setMaximumSize(b_size*scale);
     setMinimumSize(b_size*scale);
     resize(b_size*scale);
-    requestUpdate();
 }
 
 bool StreamWindow::event(QEvent *event)
