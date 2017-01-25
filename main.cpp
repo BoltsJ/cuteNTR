@@ -101,20 +101,22 @@ void messageHandler(QtMsgType t, const QMessageLogContext &c, const QString &m)
     if (c.function)
         suff = QString(" - [%1]").arg(c.function);
     switch(t) {
-        case QtInfoMsg:
-        case QtDebugMsg:
-            log << "[INFO] " << m << '\n';
-            break;
-        case QtWarningMsg:
-            log << "[WARN] " << m << suff << '\n';
-            break;
-        case QtCriticalMsg:
-            log << "[CRIT] " << m << suff << '\n';
-            break;
-        case QtFatalMsg:
-            log << "[CRIT] " << m << suff << '\n';
-            exit(1);
-            break;
+#if QT_VERSION >= 0x050500
+    case QtInfoMsg:
+#endif
+    case QtDebugMsg:
+        log << "[INFO] " << m << '\n';
+        break;
+    case QtWarningMsg:
+        log << "[WARN] " << m << suff << '\n';
+        break;
+    case QtCriticalMsg:
+        log << "[CRIT] " << m << suff << '\n';
+        break;
+    case QtFatalMsg:
+        log << "[CRIT] " << m << suff << '\n';
+        exit(1);
+        break;
     }
     file.close();
 }

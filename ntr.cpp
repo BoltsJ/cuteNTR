@@ -46,11 +46,11 @@ void Ntr::initStream()
 
 void Ntr::writeNFCPatch(int type)
 {
-    qInfo() << "Writing NFC patch...";
+    qDebug() << "Writing NFC patch...";
     QHostAddress dsIP(s.value(CFG_IP).toString());
     cmd_sock->connectToHost(dsIP, 8000);
     if(!cmd_sock->waitForConnected(5000)) {
-        qInfo() << "Failed to connect!";
+        qDebug() << "Failed to connect!";
         return;
     }
     uint32_t pid;
@@ -71,7 +71,7 @@ void Ntr::writeNFCPatch(int type)
     cmd_sock->write(patch);
     cmd_sock->flush();
     cmd_sock->close();
-    qInfo() << len << " bytes written.";
+    qDebug() << len << " bytes written.";
 }
 
 bool Ntr::start3DSStream()
@@ -82,7 +82,7 @@ bool Ntr::start3DSStream()
         qWarning() << "Failed to connect!";
         return false;
     }
-    qInfo() << "Connected!";
+    qDebug() << "Connected!";
 
     /* Send the command to start streaming
      * This particular packet is derived from the NTRViewer source
@@ -101,7 +101,7 @@ bool Ntr::start3DSStream()
         qWarning() << "Failed to reconnect!";
         return false;
     }
-    qInfo() << "Successfully initialized stream!";
+    qDebug() << "Successfully initialized stream!";
     cmd_sock->close();
 
     return true;
