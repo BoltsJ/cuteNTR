@@ -21,6 +21,7 @@
 #include <QObject>
 #include <QSettings>
 #include <QThread>
+#include <QVector>
 #include <QtNetwork>
 #include <stdint.h>
 
@@ -39,8 +40,8 @@ public slots:
     void writeNFCPatch(int type);
 
 private:
-    void sendPacket(uint32_t type, uint32_t cmd, const uint32_t args[],
-            uint32_t len);
+    void sendPacket(uint32_t type, uint32_t cmd,
+            QVector<uint32_t> args, uint32_t len);
 
     QSettings s;
     QTcpSocket *cmd_sock;

@@ -64,17 +64,12 @@ void Ntr::writeNFCPatch(int type)
             offset = 0x105ae4;
             patch.append("\x70\x47", 2);
     }
-    uint32_t args[17];
-    memset((void*)args, 0, 68);
-    args[0] = pid;
-    args[1] = offset;
-    args[2] = patch.length();
-    args[16] = patch.length();
-    sendPacket(1, 10, args, 17);
+    uint32_t len = patch.length();
+    sendPacket(1, 10, {pid, offset, len}, len);
     cmd_sock->write(patch);
     cmd_sock->flush();
     cmd_sock->close();
-    std::cerr << patch.length() << " bytes written.\n";
+    std::cerr << len << " bytes written.\n";
 }
 
 bool Ntr::start3DSStream()
@@ -85,23 +80,18 @@ bool Ntr::start3DSStream()
         std::cerr << "Failed to connect!\n";
         return false;
     }
-    //cmd_sock->open(QIODevice::ReadWrite);
     std::cerr << "Connected!\n";
 
     /* Send the command to start streaming
      * This particular packet is derived from the NTRViewer source
      */
     int mode = s.value(CFG_PRIMODE, DEF_PRIMODE).toInt();
-    int priortyfactor = s.value(CFG_PRIFACT, DEF_PRIFACT).toInt();
-    int jpegquality = s.value(CFG_JPGQUAL, DEF_JPGQUAL).toInt();
-    int qosvalue = s.value(CFG_QOSVAL, DEF_QOSVAL).toInt();
-    int qosbyte = qosvalue * 1024 * 1024 / 8;
-    uint32_t args[4];
-    args[0] = (mode<<8)|priortyfactor;
-    args[1] = jpegquality;
-    args[2] = qosbyte;
-    args[3] = 0;
-    sendPacket(0, 901, args, 4);
+    int prifact = s.value(CFG_PRIFACT, DEF_PRIFACT).toInt();
+    uint32_t pri = (mode<<8)|prifact;
+    uint32_t jpegq = s.value(CFG_JPGQUAL, DEF_JPGQUAL).toInt();
+    uint32_t qosvalue = s.value(CFG_QOSVAL, DEF_QOSVAL).toInt() << 17;
+
+    sendPacket(0, 901, {pri, jpegq, qosvalue, 0}, 0);
     cmd_sock->close();
     QThread::QThread::sleep(3);
     cmd_sock->connectToHost(dsIP, 8000);
@@ -116,8 +106,8 @@ bool Ntr::start3DSStream()
     return true;
 }
 
-void Ntr::sendPacket(uint32_t type, uint32_t cmd, const uint32_t args[],
-        uint32_t nargs)
+void Ntr::sendPacket(uint32_t type, uint32_t cmd, QVector<uint32_t> args,
+        uint32_t len)
 {
     char buf[84];
     memset((void*)buf, 0, 84);
@@ -126,9 +116,9 @@ void Ntr::sendPacket(uint32_t type, uint32_t cmd, const uint32_t args[],
     ((uint32_t*)buf)[1] = 1;
     ((uint32_t*)buf)[2] = type;
     ((uint32_t*)buf)[3] = cmd;
-    for (uint32_t i = 0; i < nargs; ++i) {
-        ((uint32_t*)buf)[i+4] = args[i];
-    }
+    for (int i = 0; i < args.length(); ++i)
+        ((uint32_t*)buf)[i+4] = args.at(i);
+    ((uint32_t*)buf)[20] = len;
     cmd_sock->write((char*)buf, 84);
     cmd_sock->flush();
 }
