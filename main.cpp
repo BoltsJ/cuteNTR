@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     a.setApplicationName("cutentr");
     a.setApplicationDisplayName("cuteNTR");
-    a.setApplicationVersion("v0.1.0");
+    a.setApplicationVersion("v0.1.1");
 
     MainWindow w;
     StreamWindow top(true);

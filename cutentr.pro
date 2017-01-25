@@ -8,7 +8,7 @@ QT       += core gui network widgets
 
 TARGET = cutentr
 TEMPLATE = app
-VERSION = -0.1.0
+VERSION = -0.1.1
 
 BUILD_DIR = $$shadowed($$PWD)
 isEmpty(PREFIX): PREFIX = /usr/local
@@ -31,3 +31,5 @@ HEADERS  += mainwindow.h \
         streamwindow.h
 
 FORMS    += mainwindow.ui
+
+DISTFILES += cutentr.desktop
