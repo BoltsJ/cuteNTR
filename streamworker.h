@@ -30,6 +30,7 @@ public:
 signals:
     void topImageReady(QPixmap img);
     void botImageReady(QPixmap img);
+    void streamFailed();
 
 public slots:
     void stream();

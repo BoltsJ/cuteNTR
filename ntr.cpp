@@ -40,15 +40,17 @@ void Ntr::initStream()
 {
     if (start3DSStream())
         emit streamStarted();
+    else
+        emit streamFailed();
 }
 
 void Ntr::writeNFCPatch(int type)
 {
-    std::cerr << "Writing NFC patch...\n";
+    qInfo() << "Writing NFC patch...";
     QHostAddress dsIP(s.value(CFG_IP).toString());
     cmd_sock->connectToHost(dsIP, 8000);
     if(!cmd_sock->waitForConnected(5000)) {
-        std::cerr << "Failed to connect!\n";
+        qInfo() << "Failed to connect!";
         return;
     }
     uint32_t pid;
@@ -69,7 +71,7 @@ void Ntr::writeNFCPatch(int type)
     cmd_sock->write(patch);
     cmd_sock->flush();
     cmd_sock->close();
-    std::cerr << len << " bytes written.\n";
+    qInfo() << len << " bytes written.";
 }
 
 bool Ntr::start3DSStream()
@@ -77,10 +79,10 @@ bool Ntr::start3DSStream()
     QHostAddress dsIP(s.value(CFG_IP).toString());
     cmd_sock->connectToHost(dsIP, 8000);
     if(!cmd_sock->waitForConnected(5000)) {
-        std::cerr << "Failed to connect!\n";
+        qWarning() << "Failed to connect!";
         return false;
     }
-    std::cerr << "Connected!\n";
+    qInfo() << "Connected!";
 
     /* Send the command to start streaming
      * This particular packet is derived from the NTRViewer source
@@ -96,13 +98,12 @@ bool Ntr::start3DSStream()
     QThread::QThread::sleep(3);
     cmd_sock->connectToHost(dsIP, 8000);
     if(!cmd_sock->waitForConnected(5000)) {
-        std::cerr << "Failed to reconnect!\n";
+        qWarning() << "Failed to reconnect!";
         return false;
     }
-    std::cerr << "Successfully initialized stream!\n";
+    qInfo() << "Successfully initialized stream!";
     cmd_sock->close();
 
-    std::cerr << "Finished.\n";
     return true;
 }
 

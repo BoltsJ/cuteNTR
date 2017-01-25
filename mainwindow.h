@@ -35,6 +35,9 @@ public:
 protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
 
+public slots:
+    void disconnectedStream();
+
 signals:
     void initStream();
     void sendNfcPatch(int);

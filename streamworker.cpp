@@ -34,7 +34,7 @@ StreamWorker::~StreamWorker()
 void StreamWorker::stream()
 {
     if (!rcv_sock->bind(QHostAddress::Any, 8001)) {
-        // emit err
+        emit streamFailed();
         return;
     }
     forever {
@@ -48,10 +48,15 @@ void StreamWorker::stream()
         pixmap.loadFromData(data);
         if (ret == 1) {
             emit topImageReady(pixmap);
-        } else {
+        } else if (ret == 0) {
             emit botImageReady(pixmap);
+        } else {
+            break;
         }
     }
+    rcv_sock->close();
+    qWarning() << "Stream disconnected";
+    emit streamFailed();
 }
 
 int StreamWorker::readJPEG(QByteArray &jpeg)
@@ -64,7 +69,7 @@ int StreamWorker::readJPEG(QByteArray &jpeg)
     int cur_id, expkt = 0;
     rcv_sock->waitForReadyRead();
     r = rcv_sock->readDatagram(buf.data(), 2000, &dsIP, &dsPort);
-    if (r <= 0) throw(0);
+    if (r < 0) return -2;
     buf.truncate(r);
     cur_id = buf.at(0);
     do {
@@ -75,7 +80,7 @@ int StreamWorker::readJPEG(QByteArray &jpeg)
         rcv_sock->waitForReadyRead();
         buf.resize(2000);
         r = rcv_sock->readDatagram(buf.data(), 2000, &dsIP, &dsPort);
-        if (r <= 0) throw(0);
+        if (r < 0) return -2;
         buf.truncate(r);
         ++expkt;
         if (expkt != buf.at(3)) {

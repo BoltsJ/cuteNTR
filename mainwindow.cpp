@@ -63,6 +63,13 @@ void MainWindow::closeEvent(QCloseEvent*)
     qApp->quit();
 }
 
+void MainWindow::disconnectedStream()
+{
+    ui->connectButton->setEnabled(true);
+    ui->dsIP->setEnabled(true);
+    ui->centralWidget->repaint();
+}
+
 void MainWindow::on_connectButton_clicked()
 {
     ui->connectButton->setEnabled(false);

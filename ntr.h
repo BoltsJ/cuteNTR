@@ -34,6 +34,7 @@ public:
 
 signals:
     void streamStarted();
+    void streamFailed();
 
 public slots:
     void initStream();
