@@ -8,12 +8,16 @@ QT       += core gui network widgets
 
 TARGET = cutentr
 TEMPLATE = app
-VERSION = -0.0.0
+VERSION = -0.1.0
 
 BUILD_DIR = $$shadowed($$PWD)
 isEmpty(PREFIX): PREFIX = /usr/local
 target.path = $$PREFIX/bin
-INSTALLS += target
+
+desktop.files = cutentr.desktop
+desktop.path = $$PREFIX/share/applications
+
+INSTALLS += target desktop
 
 SOURCES += main.cpp\
         mainwindow.cpp \
