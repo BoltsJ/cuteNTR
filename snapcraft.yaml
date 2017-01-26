@@ -1,0 +1,29 @@
+name: cutentr
+version: master
+summary: NTR streaming client
+description: |
+  This program provides a streaming client for 3DS systems running NTR custom
+  firmware.
+
+grade: stable
+confinement: strict
+
+apps:
+  cutentr:
+    command: desktop-launch $SNAP/usr/local/bin/cutentr
+    plugs: [network,network-bind,unity7]
+
+parts:
+  cutentr:
+    plugin: qmake
+    source: .
+    qt-version: qt5
+    build-packages:
+      - build-essential
+      - qtbase5-dev
+      - libqt5core5a
+      - libqt5network5
+      - libqt5gui5
+      - libqt5widgets5
+      - libqt5dbus5
+    after: [desktop-qt5]

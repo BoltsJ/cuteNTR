@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui network widgets
+CONFIG   += c++11
 
 TARGET = cutentr
 TEMPLATE = app
