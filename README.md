@@ -3,14 +3,19 @@
 cuteNTR is intended to be a cross platform debugger and streaming client for
 NTR CFW for 3DS.
 
+Precompiled linux binaries are available on the [tags page](https://gitlab.com/BoltsJ/cuteNTR/tags).
+
 ## Current status
 
 - Starting a stream is implemented!
 - The top screen and bottom screen are displayed in separate windows.
-- Scaling the windows is not supported.
+- Scaling the windows is implemented, and can be done without restarting the
+  client.
 - Stream settings can be set and will be saved when the stream is launched.
-- Stopping the stream is not implemented. To exit close _all_ windows or type
-  control-c into the terminal.
+- Sending a unversal NFC patch is implemented. Game specifice patches are in the
+  works.
+
+![screen shot](http://i.imgur.com/8yJqRvw.png "Screenshot")
 
 ## Building
 
