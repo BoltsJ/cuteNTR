@@ -16,10 +16,10 @@
 #include "streamwindow.h"
 
 namespace {
-const char* CFG_TSCALE  = "topScale";
-const float DEF_TSCALE  = 1;
-const char* CFG_BSCALE  = "botScale";
-const float DEF_BSCALE  = 1;
+const char*  CFG_TSCALE = "topScale";
+const double DEF_TSCALE = 1;
+const char*  CFG_BSCALE = "botScale";
+const double DEF_BSCALE = 1;
 }
 
 StreamWindow::StreamWindow(bool top, QWindow *parent) :
@@ -29,10 +29,10 @@ StreamWindow::StreamWindow(bool top, QWindow *parent) :
 {
     create();
     QSettings s(qApp->applicationName());
-    scale = s.value(CFG_BSCALE, DEF_BSCALE).toFloat();
+    scale = s.value(CFG_BSCALE, DEF_BSCALE).toDouble();
     if (top) {
         b_size.setWidth(400);
-        scale = s.value(CFG_TSCALE, DEF_TSCALE).toFloat();
+        scale = s.value(CFG_TSCALE, DEF_TSCALE).toDouble();
     }
     resize(b_size*scale);
     setMinimumSize(b_size*scale);
@@ -62,7 +62,7 @@ void StreamWindow::renderNow()
 
     QPaintDevice *device = m_backingStore->paintDevice();
     QPainter painter(device);
-
+    painter.setTransform(QTransform(scale, 0, 0, scale, 0, 0));
     painter.fillRect(0, 0, width(), height(), Qt::gray);
     render(&painter);
 
@@ -74,7 +74,6 @@ void StreamWindow::render(QPainter *painter)
 {
     QTransform xform(0, -1, 1, 0, 0, 0);
     QPixmap scr = pixmap.transformed(xform);
-    scr = scr.scaledToWidth(b_size.width()*scale, Qt::SmoothTransformation);
     painter->drawPixmap(0,0,scr);
 }
 
@@ -92,7 +91,7 @@ void StreamWindow::renderPixmap(QPixmap pixmap)
     renderLater();
 }
 
-void StreamWindow::setScale(float s)
+void StreamWindow::setScale(double s)
 {
     scale = s;
     setMaximumSize(b_size*scale);

@@ -32,7 +32,7 @@ public slots:
     void renderLater();
     void renderNow();
     void renderPixmap(QPixmap pixmap);
-    void setScale(float s);
+    void setScale(double s);
 
 protected:
     bool event(QEvent *event) Q_DECL_OVERRIDE;
@@ -45,7 +45,7 @@ private:
     bool m_update_pending;
     QPixmap pixmap;
     QSize b_size;
-    float scale;
+    double scale;
 };
 
 #endif // STREAMWINDOW_H

@@ -17,20 +17,20 @@
 #include "ui_mainwindow.h"
 
 namespace {
-const char* CFG_IP      = "ipAddress";
-const char* DEF_IP      = "255.255.255.255";
-const char* CFG_JPGQUAL = "jpegQuality";
-const int   DEF_JPGQUAL = 80;
-const char* CFG_PRIFACT = "priorityFactor";
-const int   DEF_PRIFACT = 5;
-const char* CFG_PRIMODE = "priorityMode";
-const bool  DEF_PRIMODE = true;
-const char* CFG_QOSVAL  = "qosValue";
-const int   DEF_QOSVAL  = 105;
-const char* CFG_TSCALE  = "topScale";
-const float DEF_TSCALE  = 1;
-const char* CFG_BSCALE  = "botScale";
-const float DEF_BSCALE  = 1;
+const char*  CFG_IP      = "ipAddress";
+const char*  DEF_IP      = "255.255.255.255";
+const char*  CFG_JPGQUAL = "jpegQuality";
+const int    DEF_JPGQUAL = 80;
+const char*  CFG_PRIFACT = "priorityFactor";
+const int    DEF_PRIFACT = 5;
+const char*  CFG_PRIMODE = "priorityMode";
+const bool   DEF_PRIMODE = true;
+const char*  CFG_QOSVAL  = "qosValue";
+const int    DEF_QOSVAL  = 105;
+const char*  CFG_TSCALE  = "topScale";
+const double DEF_TSCALE  = 1;
+const char*  CFG_BSCALE  = "botScale";
+const double DEF_BSCALE  = 1;
 }
 
 MainWindow::MainWindow(QWidget *parent) :

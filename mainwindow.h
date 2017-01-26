@@ -41,8 +41,8 @@ public slots:
 signals:
     void initStream();
     void sendNfcPatch(int);
-    void topScaleChanged(float);
-    void botScaleChanged(float);
+    void topScaleChanged(double);
+    void botScaleChanged(double);
 
 private slots:
     void on_connectButton_clicked();
