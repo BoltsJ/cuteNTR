@@ -1,0 +1,11 @@
+cutentr (0.1.2-1) yakkety; urgency=medium
+
+  * Change default scaling method to nearest neighbor.
+
+ -- Joseph R. Nosie <joenosie@openmailbox.org>  Fri, 27 Jan 2017 10:52:00 -0600
+
+cutentr (0.1.1-1) yakkety; urgency=medium
+
+  * Initial release
+
+ -- Joseph R. Nosie <joenosie@openmailbox.org>  Mon, 23 Jan 2017 12:07:27 -0600

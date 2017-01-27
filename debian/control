@@ -1,0 +1,17 @@
+Source: cutentr
+Section: x11
+Priority: optional
+Maintainer: Joseph R. Nosie <joenosie@openmailbox.org>
+Build-Depends: debhelper (>=9), qt5-qmake, libqt5core5a, libqt5network5, libqt5gui5, libqt5widgets5, qtbase5-dev
+Standards-Version: 3.9.8
+Homepage: https://gitlab.com/BoltsJ/cuteNTR
+#Vcs-Git: git://anonscm.debian.org/collab-maint/cutentr.git
+#Vcs-Browser: https://anonscm.debian.org/cgit/collab-maint/cutentr.git
+
+Package: cutentr
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: N3DS streaming client
+ A streaming client for NTR CFW on N3DS. Written in Qt it aims to be a
+ cross-platform streaming solution for broadcasting 3DS games to twitch or
+ other services.
