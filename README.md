@@ -17,6 +17,11 @@ Precompiled linux binaries are available on the [tags page](https://gitlab.com/B
 
 ![screen shot](http://i.imgur.com/8yJqRvw.png "Screenshot")
 
+## Packages
+
+- [Ubuntu packages](https://gitlab.com/BoltsJ/cuteNTR/tags).
+- [cutentr-git](https://aur.archlinux.org/packages/cutentr-git/) on AUR.
+
 ## Building
 
 Requirements:
