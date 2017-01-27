@@ -15,7 +15,7 @@ BUILD_DIR = $$shadowed($$PWD)
 isEmpty(PREFIX): PREFIX = /usr/local
 target.path = $$PREFIX/bin
 
-desktop.files = cutentr.desktop
+desktop.files = setup/gui/cutentr.desktop
 desktop.path = $$PREFIX/share/applications
 
 INSTALLS += target desktop
