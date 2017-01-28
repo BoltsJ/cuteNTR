@@ -1,6 +1,7 @@
 cutentr (0.1.2-1) yakkety; urgency=medium
 
   * Change default scaling method to nearest neighbor.
+  * Add smooth scaling option.
 
  -- Joseph R. Nosie <joenosie@openmailbox.org>  Fri, 27 Jan 2017 10:52:00 -0600
 

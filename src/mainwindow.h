@@ -41,14 +41,15 @@ public slots:
 signals:
     void initStream();
     void sendNfcPatch(int);
-    void topScaleChanged(double);
-    void botScaleChanged(double);
+    void topSettingsChanged();
+    void botSettingsChanged();
 
 private slots:
     void on_connectButton_clicked();
     void on_dsIP_returnPressed();
     void on_tScale_valueChanged(double scale);
     void on_bScale_valueChanged(double scale);
+    void on_smooth_stateChanged(int state);
     void on_sendNfcPatch_clicked();
 
 private:

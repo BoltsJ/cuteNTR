@@ -31,6 +31,8 @@ const char*  CFG_TSCALE  = "topScale";
 const double DEF_TSCALE  = 1;
 const char*  CFG_BSCALE  = "botScale";
 const double DEF_BSCALE  = 1;
+const char*  CFG_SMOOTH  = "smoothing";
+const bool   DEF_SMOOTH  = false;
 }
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -48,6 +50,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->jpegQuality->setValue(s.value(CFG_JPGQUAL, DEF_JPGQUAL).toInt());
     ui->tScale->setValue(s.value(CFG_TSCALE, DEF_TSCALE).toFloat());
     ui->bScale->setValue(s.value(CFG_BSCALE, DEF_BSCALE).toFloat());
+    ui->smooth->setChecked(s.value(CFG_SMOOTH, DEF_SMOOTH).toBool());
 
     // Fix window size
     setMaximumSize(minimumSize());
@@ -99,11 +102,18 @@ void MainWindow::on_sendNfcPatch_clicked()
 void MainWindow::on_tScale_valueChanged(double scale)
 {
     s.setValue(CFG_TSCALE, scale);
-    emit topScaleChanged(scale);
+    emit topSettingsChanged();
 }
 
 void MainWindow::on_bScale_valueChanged(double scale)
 {
     s.setValue(CFG_BSCALE, scale);
-    emit botScaleChanged(scale);
+    emit botSettingsChanged();
+}
+
+void MainWindow::on_smooth_stateChanged(int state)
+{
+    s.setValue(CFG_SMOOTH, state != 0);
+    emit topSettingsChanged();
+    emit botSettingsChanged();
 }

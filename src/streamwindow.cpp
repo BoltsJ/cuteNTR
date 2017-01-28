@@ -20,23 +20,20 @@ const char*  CFG_TSCALE = "topScale";
 const double DEF_TSCALE = 1;
 const char*  CFG_BSCALE = "botScale";
 const double DEF_BSCALE = 1;
+const char*  CFG_SMOOTH = "smoothing";
+const bool   DEF_SMOOTH = false;
 }
 
 StreamWindow::StreamWindow(bool top, QWindow *parent) :
     QWindow(parent),
     m_update_pending(false),
-    b_size(320, 240)
+    b_size(320, 240),
+    istop(top),
+    s(qApp->applicationName())
 {
     create();
-    QSettings s(qApp->applicationName());
-    scale = s.value(CFG_BSCALE, DEF_BSCALE).toDouble();
-    if (top) {
-        b_size.setWidth(400);
-        scale = s.value(CFG_TSCALE, DEF_TSCALE).toDouble();
-    }
-    resize(b_size*scale);
-    setMinimumSize(b_size*scale);
-    setMaximumSize(b_size*scale);
+    if (istop) b_size.setWidth(400);
+    updateSettings();
     m_backingStore = new QBackingStore(this);
 }
 
@@ -64,6 +61,8 @@ void StreamWindow::renderNow()
     QPainter painter(device);
     painter.setTransform(QTransform(scale, 0, 0, scale, 0, 0));
     painter.fillRect(0, 0, width(), height(), Qt::gray);
+    painter.setRenderHint(QPainter::SmoothPixmapTransform, smooth);
+    painter.setRenderHint(QPainter::Antialiasing, smooth);
     render(&painter);
 
     m_backingStore->endPaint();
@@ -91,9 +90,13 @@ void StreamWindow::renderPixmap(QPixmap pixmap)
     renderLater();
 }
 
-void StreamWindow::setScale(double s)
+void StreamWindow::updateSettings()
 {
-    scale = s;
+    smooth = s.value(CFG_SMOOTH, DEF_SMOOTH).toBool();
+    if (istop)
+        scale = s.value(CFG_TSCALE, DEF_TSCALE).toDouble();
+    else
+        scale = s.value(CFG_BSCALE, DEF_BSCALE).toDouble();
     setMaximumSize(b_size*scale);
     setMinimumSize(b_size*scale);
     resize(b_size*scale);

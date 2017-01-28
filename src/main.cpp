@@ -57,10 +57,10 @@ int main(int argc, char *argv[])
             &ntr, SLOT(initStream()));
     QObject::connect(&w, SIGNAL(sendNfcPatch(int)),
             &ntr, SLOT(writeNFCPatch(int)));
-    QObject::connect(&w, SIGNAL(topScaleChanged(double)),
-            &top, SLOT(setScale(double)));
-    QObject::connect(&w, SIGNAL(botScaleChanged(double)),
-            &bot, SLOT(setScale(double)));
+    QObject::connect(&w, SIGNAL(topSettingsChanged()),
+            &top, SLOT(updateSettings()));
+    QObject::connect(&w, SIGNAL(botSettingsChanged()),
+            &bot, SLOT(updateSettings()));
 
     QObject::connect(&ntr, SIGNAL(streamStarted()),
             t, SLOT(start()));
