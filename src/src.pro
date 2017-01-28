@@ -9,6 +9,8 @@ CONFIG   += c++11
 TARGET = ../cutentr
 TEMPLATE = app
 
+isEmpty(PREFIX): PREFIX = /usr/local
+
 target.path = $$PREFIX/bin
 
 INSTALLS += target
