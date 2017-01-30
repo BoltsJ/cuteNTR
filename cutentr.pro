@@ -13,7 +13,13 @@ isEmpty(PREFIX): PREFIX = /usr/local
 
 desktop.files = setup/gui/cutentr.desktop
 desktop.path = $$PREFIX/share/applications
+icon.files = setup/gui/cutentr.svg
+icon.path = $$PREFIX/share/icons
+pixmap.files = resources/linux/icon/cutentr.xpm
+pixmap.path = $$PREFIX/share/pixmaps
 
-INSTALLS += desktop
+INSTALLS += desktop icon pixmap
 
-DISTFILES += $$desktop.files
+DISTFILES += $$desktop.files \
+             $$icon.files \
+             $$pixmap.files

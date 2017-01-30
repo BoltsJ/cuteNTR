@@ -3,8 +3,6 @@
 cuteNTR is intended to be a cross platform debugger and streaming client for
 NTR CFW for 3DS.
 
-Precompiled linux binaries are available on the [tags page](https://gitlab.com/BoltsJ/cuteNTR/tags).
-
 ## Current status
 
 - Starting a stream is implemented!
@@ -19,8 +17,13 @@ Precompiled linux binaries are available on the [tags page](https://gitlab.com/B
 
 ## Packages
 
-- [Ubuntu packages](https://gitlab.com/BoltsJ/cuteNTR/tags).
-- [cutentr-git](https://aur.archlinux.org/packages/cutentr-git/) on AUR.
+- Arch Linux - [cutentr-git](https://aur.archlinux.org/packages/cutentr-git/)
+- Ubuntu packages are available in a PPA.
+```
+sudo add-apt-repository ppa:joenosie/3ds
+sudo apt-get update
+sudo apt-get install cutentr
+```
 
 ## Building
 
@@ -53,3 +56,8 @@ PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along with
 this program. If not, see http://www.gnu.org/licenses/.
+
+### Icon
+Icon by Kevin Navia
+kevin@pixelpush.io
+License: https://creativecommons.org/licenses/by/3.0/
