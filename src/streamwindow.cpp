@@ -29,7 +29,7 @@ StreamWindow::StreamWindow(bool top, QWindow *parent) :
     m_update_pending(false),
     b_size(320, 240),
     istop(top),
-    s(qApp->applicationName())
+    config(qApp->applicationName())
 {
     create();
     if (istop) b_size.setWidth(400);
@@ -92,11 +92,11 @@ void StreamWindow::renderPixmap(QPixmap pixmap)
 
 void StreamWindow::updateSettings()
 {
-    smooth = s.value(CFG_SMOOTH, DEF_SMOOTH).toBool();
+    smooth = config.value(CFG_SMOOTH, DEF_SMOOTH).toBool();
     if (istop)
-        scale = s.value(CFG_TSCALE, DEF_TSCALE).toDouble();
+        scale = config.value(CFG_TSCALE, DEF_TSCALE).toDouble();
     else
-        scale = s.value(CFG_BSCALE, DEF_BSCALE).toDouble();
+        scale = config.value(CFG_BSCALE, DEF_BSCALE).toDouble();
     setMaximumSize(b_size*scale);
     setMinimumSize(b_size*scale);
     resize(b_size*scale);

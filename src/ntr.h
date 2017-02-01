@@ -16,12 +16,9 @@
 #ifndef NTR_H
 #define NTR_H
 
-#include <QHostAddress>
-#include <QLocalSocket>
 #include <QObject>
 #include <QSettings>
-#include <QThread>
-#include <QVector>
+#include <QTimer>
 #include <QtNetwork>
 #include <stdint.h>
 
@@ -30,22 +27,54 @@ class Ntr : public QObject
     Q_OBJECT
 public:
     explicit Ntr(QObject *parent = 0);
-    bool start3DSStream();
+    ~Ntr();
+
+    enum Command {
+        Empty,
+        WriteSave,
+        Hello,
+        Reload,
+        PidList,
+        AttachProc,
+        ThreadList,
+        MemLayout,
+        ReadMem,
+        WriteMem,
+        Resume,
+        QueryHandle,
+        RemotePlay
+    };
+    Q_ENUM(Command)
 
 signals:
-    void streamStarted();
-    void streamFailed();
+    void bufferFilled(QByteArray);
+    void streamReady();
 
 public slots:
-    void initStream();
-    void writeNFCPatch(int type);
+    void connectToDS();
+    void disconnectFromDS();
+    void sendCommand(Ntr::Command command, QVector<uint32_t> args={},
+                     uint32_t len=0, QByteArray data="");
+
+private slots:
+    void sendHeartbeat();
+    void readStream();
 
 private:
-    void sendPacket(uint32_t type, uint32_t cmd,
-            QVector<uint32_t> args, uint32_t len);
+    void sendPacket(uint32_t type, uint32_t cmd, QVector<uint32_t> args,
+                    uint32_t len);
+    void remotePlay();
+    void readPacket();
+    void readToBuf();
 
-    QSettings s;
-    QTcpSocket *cmd_sock;
+    QTcpSocket *sock;
+    QTimer *heartbeat;
+    QSettings config;
+
+    uint32_t sequence;
+    qint64 bufferlen;
+    uint32_t recievedcmd;
+    QByteArray buffer;
 };
 
 #endif // NTR_H

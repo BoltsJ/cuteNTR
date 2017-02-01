@@ -86,7 +86,7 @@ void MainWindow::on_connectButton_clicked()
     s.setValue(CFG_PRIMODE, (bool)ui->priMode->currentIndex());
     s.setValue(CFG_QOSVAL, ui->qosValue->value());
 
-    emit initStream();
+    emit ntrCommand(Ntr::RemotePlay);
 }
 
 void MainWindow::on_dsIP_returnPressed()

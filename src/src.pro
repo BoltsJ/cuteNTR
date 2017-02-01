@@ -18,12 +18,15 @@ INSTALLS += target
 SOURCES += main.cpp\
         mainwindow.cpp \
         ntr.cpp \
+        ntrutility.cpp \
         streamworker.cpp \
-        streamwindow.cpp
+        streamwindow.cpp \
 
 HEADERS  += mainwindow.h \
         ntr.h \
+        ntrutility.h \
         streamworker.h \
-        streamwindow.h
+        streamwindow.h \
+
 
 FORMS    += mainwindow.ui

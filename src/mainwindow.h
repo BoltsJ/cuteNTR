@@ -19,6 +19,7 @@
 #include <QMainWindow>
 #include <QSettings>
 #include <QtNetwork>
+#include "ntr.h"
 
 namespace Ui {
 class MainWindow;
@@ -39,6 +40,8 @@ public slots:
     void disconnectedStream();
 
 signals:
+    void ntrCommand(Ntr::Command, QVector<uint32_t> a={}, uint32_t=0,
+                    QByteArray="");
     void initStream();
     void sendNfcPatch(int);
     void topSettingsChanged();

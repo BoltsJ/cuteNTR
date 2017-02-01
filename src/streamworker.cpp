@@ -20,7 +20,7 @@ const char* CFG_IP = "ipAddress";
 }
 
 StreamWorker::StreamWorker() :
-    s(qApp->applicationName())
+    config(qApp->applicationName())
 {
     rcv_sock = new QUdpSocket(this);
 }
@@ -61,7 +61,7 @@ void StreamWorker::stream()
 
 int StreamWorker::readJPEG(QByteArray &jpeg)
 {
-    QHostAddress dsIP(s.value(CFG_IP).toString());
+    QHostAddress dsIP(config.value(CFG_IP).toString());
     quint16 dsPort = 8000;
     QByteArray buf(2000, '\0');
     int r;

@@ -13,42 +13,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef STREAMWINDOW_H
-#define STREAMWINDOW_H
+#ifndef NTRUTILITY_H
+#define NTRUTILITY_H
 
-#include <QtGui>
+#include <QObject>
+#include <QtDebug>
+#include "ntr.h"
 
-class StreamWindow : public QWindow
+class NtrUtility : public QObject
 {
     Q_OBJECT
 public:
-    explicit StreamWindow(bool top, QWindow *parent = 0);
+    explicit NtrUtility(QObject *parent = 0);
 
-    virtual void render(QPainter *painter);
+    uint32_t getPid(QString pname);
 
 signals:
+    void ntrCommand(Ntr::Command c, QVector<uint32_t> a={}, uint32_t l=0,
+                    QByteArray d="");
 
 public slots:
-    void renderLater();
-    void renderNow();
-    void renderPixmap(QPixmap pixmap);
-    void updateSettings();
-
-protected:
-    bool event(QEvent *event) Q_DECL_OVERRIDE;
-
-    void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
-    void exposeEvent(QExposeEvent *event) Q_DECL_OVERRIDE;
+    void writeNfcPatch(int type);
+    void handleInfo(QByteArray info);
 
 private:
-    QBackingStore *m_backingStore;
-    bool m_update_pending;
-    QPixmap pixmap;
-    QSize b_size;
-    bool istop;
-    QSettings config;
-    double scale;
-    bool smooth;
+    QStringList pidlist;
+    QString lastmessage;
 };
 
-#endif // STREAMWINDOW_H
+#endif // NTRUTILITY_H

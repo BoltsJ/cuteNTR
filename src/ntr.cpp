@@ -13,8 +13,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <QFile>
-#include <iostream>
 #include "ntr.h"
 
 namespace {
@@ -31,95 +29,160 @@ const int   DEF_QOSVAL  = 105;
 
 Ntr::Ntr(QObject *parent) :
     QObject(parent),
-    s(qApp->applicationName())
+    config(qApp->applicationName()),
+    sequence(0),
+    bufferlen(0)
 {
-    cmd_sock = new QTcpSocket(this);
+    sock = new QTcpSocket(this);
+    heartbeat = new QTimer(this);
+
+    connect(sock, SIGNAL(readyRead()), this, SLOT(readStream()));
+    connect(heartbeat, SIGNAL(timeout()), this, SLOT(sendHeartbeat()));
 }
 
-void Ntr::initStream()
+Ntr::~Ntr()
 {
-    if (start3DSStream())
-        emit streamStarted();
-    else
-        emit streamFailed();
+    sock->abort();
+    heartbeat->stop();
+    delete sock;
+    delete heartbeat;
 }
 
-void Ntr::writeNFCPatch(int type)
+void Ntr::connectToDS()
 {
-    qDebug() << "Writing NFC patch...";
-    QHostAddress dsIP(s.value(CFG_IP).toString());
-    cmd_sock->connectToHost(dsIP, 8000);
-    if(!cmd_sock->waitForConnected(5000)) {
-        qDebug() << "Failed to connect!";
+    qDebug() << "Starting connection";
+    QHostAddress dsIP(config.value(CFG_IP).toString());
+    sock->connectToHost(dsIP, 8000);
+    if (!sock->waitForConnected()) {
+        qCritical() << "Connection failed!";
         return;
     }
-    uint32_t pid;
-    uint32_t offset;
-    QByteArray patch;
-    switch(type) {
-        case 1: // Pokemon S&M
-            pid = 0; // Write a helper function
-            offset = 0x3e14c0;
-            patch.append("\xe3\xa0\x10\x00", 4);
-        default:
-            pid = 0x1a;
-            offset = 0x105ae4;
-            patch.append("\x70\x47", 2);
-    }
-    uint32_t len = patch.length();
-    sendPacket(1, 10, {pid, offset, len}, len);
-    cmd_sock->write(patch);
-    cmd_sock->flush();
-    cmd_sock->close();
-    qDebug() << len << " bytes written.";
+    qDebug() << "Connection established";
+    heartbeat->start(1000);
 }
 
-bool Ntr::start3DSStream()
+void Ntr::sendHeartbeat()
 {
-    QHostAddress dsIP(s.value(CFG_IP).toString());
-    cmd_sock->connectToHost(dsIP, 8000);
-    if(!cmd_sock->waitForConnected(5000)) {
-        qWarning() << "Failed to connect!";
-        return false;
-    }
-    qDebug() << "Connected!";
+    sendPacket(0, 0, {}, 0);
+}
 
-    /* Send the command to start streaming
-     * This particular packet is derived from the NTRViewer source
-     */
-    int mode = s.value(CFG_PRIMODE, DEF_PRIMODE).toInt();
-    int prifact = s.value(CFG_PRIFACT, DEF_PRIFACT).toInt();
+void Ntr::disconnectFromDS()
+{
+    heartbeat->stop();
+    sock->flush();
+    sock->disconnectFromHost();
+    qDebug() << "Disconnected";
+}
+
+void Ntr::remotePlay()
+{
+    int mode = config.value(CFG_PRIMODE, DEF_PRIMODE).toInt();
+    int prifact = config.value(CFG_PRIFACT, DEF_PRIFACT).toInt();
     uint32_t pri = (mode<<8)|prifact;
-    uint32_t jpegq = s.value(CFG_JPGQUAL, DEF_JPGQUAL).toInt();
-    uint32_t qosvalue = s.value(CFG_QOSVAL, DEF_QOSVAL).toInt() << 17;
-
+    uint32_t jpegq = config.value(CFG_JPGQUAL, DEF_JPGQUAL).toInt();
+    uint32_t qosvalue = config.value(CFG_QOSVAL, DEF_QOSVAL).toInt() << 17;
+    qDebug() << "Sending remote play command";
     sendPacket(0, 901, {pri, jpegq, qosvalue, 0}, 0);
-    cmd_sock->close();
-    QThread::QThread::sleep(3);
-    cmd_sock->connectToHost(dsIP, 8000);
-    if(!cmd_sock->waitForConnected(5000)) {
-        qWarning() << "Failed to reconnect!";
-        return false;
-    }
-    qDebug() << "Successfully initialized stream!";
-    cmd_sock->close();
-
-    return true;
+    disconnectFromDS();
+    QThread::sleep(3);
+    connectToDS();
+    qDebug() << "Remote play started. Disconnecting to save bandwidth";
+    disconnectFromDS();
+    emit streamReady();
 }
 
-void Ntr::sendPacket(uint32_t type, uint32_t cmd, QVector<uint32_t> args,
-        uint32_t len)
+void Ntr::sendCommand(Ntr::Command command, QVector<uint32_t> args,
+                      uint32_t len, QByteArray data)
 {
-    char buf[84];
-    memset((void*)buf, 0, 84);
-    uint32_t magic = 0x12345678;
-    memcpy(buf, &magic, sizeof(magic));
-    ((uint32_t*)buf)[1] = 1;
-    ((uint32_t*)buf)[2] = type;
-    ((uint32_t*)buf)[3] = cmd;
+    switch (command) {
+    case Ntr::Empty:
+        sendHeartbeat();
+        break;
+    case Ntr::WriteSave:
+        sendPacket(1, 1, args, len);
+        sock->write(data);
+        break;
+    case Ntr::Hello:
+        sendPacket(0, 3, args, len);
+        break;
+    case Ntr::Reload:
+        sendPacket(0, 4, args, len);
+        break;
+    case Ntr::PidList:
+        sendPacket(0, 5, args, len);
+        break;
+    case Ntr::AttachProc:
+        sendPacket(0, 6, args, len);
+        break;
+    case Ntr::ThreadList:
+        sendPacket(0, 7, args, len);
+        break;
+    case Ntr::MemLayout:
+        sendPacket(0, 8, args, len);
+        break;
+    case Ntr::ReadMem:
+        sendPacket(1, 9, args, len);
+        break;
+    case Ntr::WriteMem:
+        sendPacket(1, 10, args, len);
+        sock->write(data);
+        break;
+    case Ntr::QueryHandle:
+        break;
+    case Ntr::RemotePlay:
+        remotePlay();
+        break;
+    default:
+        break;
+    }
+}
+
+void Ntr::readStream()
+{
+    if (bufferlen == 0)
+        readPacket();
+    else
+        readToBuf();
+}
+
+void Ntr::sendPacket(uint32_t type, uint32_t cmd, QVector<uint32_t> args, uint32_t len)
+{
+    sequence += 1000;
+    uint32_t pkt[21];
+    memset((void*)pkt, 0, sizeof(pkt));
+    pkt[0] = 0x12345678;
+    pkt[1] = sequence;
+    pkt[2] = type;
+    pkt[3] = cmd;
     for (int i = 0; i < args.length(); ++i)
-        ((uint32_t*)buf)[i+4] = args.at(i);
-    ((uint32_t*)buf)[20] = len;
-    cmd_sock->write((char*)buf, 84);
-    cmd_sock->flush();
+        pkt[i+4] = args.at(i);
+    pkt[20] = len;
+    sock->write((char*)pkt, sizeof(pkt));
+}
+
+void Ntr::readPacket()
+{
+    uint32_t pkt[21];
+    memset((void*)pkt, 0, sizeof(pkt));
+    sock->read((char*)pkt, sizeof(pkt));
+    if (pkt[0] != 0x12345678) {
+        qWarning() << "Bad magic number, discarding packet";
+        return;
+    }
+    bufferlen = pkt[20];
+    recievedcmd = pkt[3];
+}
+
+void Ntr::readToBuf()
+{
+    uint32_t len = sock->bytesAvailable();
+    char bytes[len];
+    sock->read(bytes, len);
+    buffer.append(bytes, len);
+    if (buffer.length() >= bufferlen) {
+        emit bufferFilled(buffer);
+        bufferlen = 0;
+        qDebug() << buffer.length() << "bytes read";
+        buffer.clear();
+    }
 }

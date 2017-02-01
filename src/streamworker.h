@@ -39,7 +39,7 @@ private:
     int readJPEG(QByteArray &jpeg);
 
     QUdpSocket *rcv_sock;
-    QSettings s;
+    QSettings config;
 };
 
 #endif // STREAMWORKER_H
