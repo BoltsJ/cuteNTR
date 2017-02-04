@@ -1,3 +1,10 @@
+cutentr (0.2.0-1) yakkety; urgency=medium
+
+  * Add Pokemon Sun and Moon NFC patch
+  * Update UI
+
+ -- Joseph R. Nosie <joenosie@openmailbox.org>  Sat, 4 Feb 2017 13:13:00 -0600
+
 cutentr (0.1.2-1) yakkety; urgency=medium
 
   * Change default scaling method to nearest neighbor.
