@@ -9,6 +9,9 @@ CONFIG   += c++11
 TARGET = ../cutentr
 TEMPLATE = app
 
+lessThan(QT_MAJOR_VERSION, 5): error("Qt 5.5 or greater is required.")
+lessThan(QT_MINOR_VERSION, 5): error("Qt 5.5 or greater is required.")
+
 isEmpty(PREFIX): PREFIX = /usr/local
 
 target.path = $$PREFIX/bin
