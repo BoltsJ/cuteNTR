@@ -9,11 +9,14 @@ NTR CFW for 3DS.
 - The top screen and bottom screen are displayed in separate windows.
 - Scaling the windows is implemented, and can be done without restarting the
   client.
+- Stream windows can be hidden by setting the scale to zero and re-shown by
+  setting the scale to a nonzero value.
 - Stream settings can be set and will be saved when the stream is launched.
-- Sending a unversal NFC patch is implemented. Game specifice patches are in the
-  works.
+- Sending a unversal NFC patch is implemented. 
+- Pokemon Sun and Moon 1.1 NFC patch.
+- Other game specifice patches are in the works.
 
-![screen shot](http://i.imgur.com/8yJqRvw.png "Screenshot")
+![screen shot](https://i.imgur.com/QrDcHoz.png "Screenshot")
 
 ## Packages
 
@@ -28,6 +31,7 @@ sudo apt-get install cutentr
 ## Building
 
 Requirements:
+- Qt 5.5 or higher
 - qmake
 - libQt5Core
 - libQt5Gui
