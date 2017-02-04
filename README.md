@@ -59,5 +59,6 @@ this program. If not, see http://www.gnu.org/licenses/.
 
 ### Icon
 Icon by Kevin Navia
-kevin@pixelpush.io
+<kevin@pixelpush.io>
+
 License: https://creativecommons.org/licenses/by/3.0/
