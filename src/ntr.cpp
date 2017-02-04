@@ -30,13 +30,17 @@ const int   DEF_QOSVAL  = 105;
 Ntr::Ntr(QObject *parent) :
     QObject(parent),
     config(qApp->applicationName()),
+    connected(false),
     sequence(0),
     bufferlen(0)
 {
     sock = new QTcpSocket(this);
     heartbeat = new QTimer(this);
 
+    qRegisterMetaType<QAbstractSocket::SocketState>();
     connect(sock, SIGNAL(readyRead()), this, SLOT(readStream()));
+    connect(sock, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
+            this, SLOT(handleSockStateChanged(QAbstractSocket::SocketState)));
     connect(heartbeat, SIGNAL(timeout()), this, SLOT(sendHeartbeat()));
 }
 
@@ -50,6 +54,8 @@ Ntr::~Ntr()
 
 void Ntr::connectToDS()
 {
+    if (connected)
+        disconnectFromDS();
     qDebug() << "Starting connection";
     QHostAddress dsIP(config.value(CFG_IP).toString());
     sock->connectToHost(dsIP, 8000);
@@ -57,8 +63,10 @@ void Ntr::connectToDS()
         qCritical() << "Connection failed!";
         return;
     }
-    qDebug() << "Connection established";
     heartbeat->start(1000);
+    connected = true;
+    emit stateChanged(Ntr::Connected);
+    qDebug() << "Connection established";
 }
 
 void Ntr::sendHeartbeat()
@@ -68,9 +76,11 @@ void Ntr::sendHeartbeat()
 
 void Ntr::disconnectFromDS()
 {
+    connected = false;
     heartbeat->stop();
     sock->flush();
     sock->disconnectFromHost();
+    emit stateChanged(Ntr::Disconnected);
     qDebug() << "Disconnected";
 }
 
@@ -94,6 +104,10 @@ void Ntr::remotePlay()
 void Ntr::sendCommand(Ntr::Command command, QVector<uint32_t> args,
                       uint32_t len, QByteArray data)
 {
+    if (!connected) {
+        qWarning() << "Not connected, can't send command";
+        return;
+    }
     switch (command) {
     case Ntr::Empty:
         sendHeartbeat();
@@ -145,7 +159,8 @@ void Ntr::readStream()
         readToBuf();
 }
 
-void Ntr::sendPacket(uint32_t type, uint32_t cmd, QVector<uint32_t> args, uint32_t len)
+void Ntr::sendPacket(uint32_t type, uint32_t cmd, QVector<uint32_t> args,
+        uint32_t len)
 {
     sequence += 1000;
     uint32_t pkt[21];
@@ -184,5 +199,14 @@ void Ntr::readToBuf()
         bufferlen = 0;
         qDebug() << buffer.length() << "bytes read";
         buffer.clear();
+    }
+}
+
+void Ntr::handleSockStateChanged(QAbstractSocket::SocketState state) {
+    if (state == QAbstractSocket::UnconnectedState) {
+        if (connected)
+            qDebug() << "Connection lost";
+        heartbeat->stop();
+        connected = false;
     }
 }

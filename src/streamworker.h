@@ -27,19 +27,26 @@ public:
     StreamWorker();
     ~StreamWorker();
 
+    enum State { Disconnected, Connected };
+    Q_ENUM(State)
+
 signals:
     void topImageReady(QPixmap img);
     void botImageReady(QPixmap img);
+    void stateChanged(StreamWorker::State);
     void streamFailed();
 
 public slots:
     void stream();
+    void stopStream();
 
 private:
     int readJPEG(QByteArray &jpeg);
 
     QUdpSocket *rcv_sock;
     QSettings config;
+
+    bool abort = false;
 };
 
 #endif // STREAMWORKER_H

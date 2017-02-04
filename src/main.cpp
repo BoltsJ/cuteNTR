@@ -59,34 +59,40 @@ int main(int argc, char *argv[])
     StreamWorker stream;
     stream.moveToThread(t_stream);
 
+    qRegisterMetaType<Ntr::Command>("Ntr::Command");
+    qRegisterMetaType<Ntr::State>("Ntr::State");
     qRegisterMetaType<uint32_t>("uint32_t");
     qRegisterMetaType<QVector<uint32_t>>("QVector<uint32_t>");
-    qRegisterMetaType<Ntr::Command>("Ntr::Command");
+    qRegisterMetaType<StreamWorker::State>("StreamWorker::State");
 
     /* Connect MainWindow signals */
     QObject::connect(&w, SIGNAL(ntrCommand(Ntr::Command,QVector<uint32_t>,
                     uint32_t,QByteArray)),
             &ntr, SLOT(sendCommand(Ntr::Command,QVector<uint32_t>,
                     uint32_t,QByteArray)));
+    QObject::connect(&w, SIGNAL(connectToDS()),
+            &ntr, SLOT(connectToDS()));
+    QObject::connect(&w, SIGNAL(disconnectFromDS()),
+            &ntr, SLOT(disconnectFromDS()));
     QObject::connect(&w, SIGNAL(sendNfcPatch(int)),
             &helper, SLOT(writeNfcPatch(int)));
+    QObject::connect(&w, SIGNAL(stopStream()),
+            &stream, SLOT(stopStream()), Qt::DirectConnection);
     QObject::connect(&w, SIGNAL(topSettingsChanged()),
             &top, SLOT(updateSettings()));
     QObject::connect(&w, SIGNAL(botSettingsChanged()),
             &bot, SLOT(updateSettings()));
 
     /* Connect Ntr signals */
-    QObject::connect(t_ntr, SIGNAL(started()),
-            &ntr, SLOT(connectToDS()));
-
     QObject::connect(&ntr, SIGNAL(streamReady()),
-            t_stream, SLOT(start()));
-    QObject::connect(&ntr, SIGNAL(streamReady()),
-            &top, SLOT(show()));
-    QObject::connect(&ntr, SIGNAL(streamReady()),
-            &bot, SLOT(show()));
+            &stream, SLOT(stream()));
+    QObject::connect(&ntr, SIGNAL(stateChanged(Ntr::State)),
+            &w, SLOT(handleNtrStateChanged(Ntr::State)));
     QObject::connect(&ntr, SIGNAL(bufferFilled(QByteArray)),
             &helper, SLOT(handleInfo(QByteArray)));
+
+    QObject::connect(t_ntr, SIGNAL(finished()),
+            &ntr, SLOT(deleteLater()));
 
     /* Connect NtrUtility signals */
     QObject::connect(&helper, SIGNAL(ntrCommand(Ntr::Command,
@@ -95,26 +101,20 @@ int main(int argc, char *argv[])
                     uint32_t,QByteArray)));
 
     /* Connect Stream signals */
-    QObject::connect(t_stream, SIGNAL(started()),
-            &stream, SLOT(stream()));
-    QObject::connect(t_stream, SIGNAL(finished()),
-            &w, SLOT(disconnectedStream()));
-
     QObject::connect(&stream, SIGNAL(topImageReady(QPixmap)),
             &top, SLOT(renderPixmap(QPixmap)));
     QObject::connect(&stream, SIGNAL(botImageReady(QPixmap)),
             &bot, SLOT(renderPixmap(QPixmap)));
-    QObject::connect(&stream, SIGNAL(streamFailed()),
-            &top, SLOT(hide()));
-    QObject::connect(&stream, SIGNAL(streamFailed()),
-            &bot, SLOT(hide()));
-    QObject::connect(&stream, SIGNAL(streamFailed()),
-            t_stream, SLOT(quit()));
+    QObject::connect(&stream, SIGNAL(stateChanged(StreamWorker::State)),
+            &w, SLOT(handleStreamStateChanged(StreamWorker::State)));
+    QObject::connect(&stream, SIGNAL(stateChanged(StreamWorker::State)),
+            &top, SLOT(handleStreamStateChanged(StreamWorker::State)));
+    QObject::connect(&stream, SIGNAL(stateChanged(StreamWorker::State)),
+            &bot, SLOT(handleStreamStateChanged(StreamWorker::State)));
 
     w.show();
-
     t_ntr->start();
-
+    t_stream->start();
     return a.exec();
 }
 

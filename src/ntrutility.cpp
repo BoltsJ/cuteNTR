@@ -18,7 +18,9 @@
 
 NtrUtility::NtrUtility(QObject *parent) : QObject(parent)
 {
-
+    qRegisterMetaType<Ntr::Command>("Ntr::Command");
+    qRegisterMetaType<uint32_t>("uint32_t");
+    qRegisterMetaType<QVector<uint32_t>>("QVector<uint32_t>");
 }
 
 uint32_t NtrUtility::getPid(QString pname)
@@ -51,7 +53,6 @@ void NtrUtility::writeNfcPatch(int type)
     uint32_t offset;
     uint32_t len;
     QByteArray patch;
-    type = 1;
     switch (type) {
     case 1: // Pokemon SM 1.1
         pid = getPid("niji_loc");

@@ -38,19 +38,21 @@ const bool   DEF_SMOOTH  = false;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    s(qApp->applicationName())
+    config(qApp->applicationName()),
+    debugging(false)
 {
     ui->setupUi(this);
 
     // Initialize Options
-    ui->dsIP->setText(s.value(CFG_IP, DEF_IP).toString());
-    ui->qosValue->setValue(s.value(CFG_QOSVAL, DEF_QOSVAL).toInt());
-    ui->priMode->setCurrentIndex(s.value(CFG_PRIMODE, DEF_PRIMODE).toBool());
-    ui->priFact->setValue(s.value(CFG_PRIFACT, DEF_PRIFACT).toInt());
-    ui->jpegQuality->setValue(s.value(CFG_JPGQUAL, DEF_JPGQUAL).toInt());
-    ui->tScale->setValue(s.value(CFG_TSCALE, DEF_TSCALE).toFloat());
-    ui->bScale->setValue(s.value(CFG_BSCALE, DEF_BSCALE).toFloat());
-    ui->smooth->setChecked(s.value(CFG_SMOOTH, DEF_SMOOTH).toBool());
+    ui->dsIP->setText(config.value(CFG_IP, DEF_IP).toString());
+    ui->qosValue->setValue(config.value(CFG_QOSVAL, DEF_QOSVAL).toInt());
+    ui->priMode->setCurrentIndex(
+            config.value(CFG_PRIMODE, DEF_PRIMODE).toBool());
+    ui->priFact->setValue(config.value(CFG_PRIFACT, DEF_PRIFACT).toInt());
+    ui->jpegQuality->setValue(config.value(CFG_JPGQUAL, DEF_JPGQUAL).toInt());
+    ui->tScale->setValue(config.value(CFG_TSCALE, DEF_TSCALE).toFloat());
+    ui->bScale->setValue(config.value(CFG_BSCALE, DEF_BSCALE).toFloat());
+    ui->smooth->setChecked(config.value(CFG_SMOOTH, DEF_SMOOTH).toBool());
 
     // Fix window size
     setMaximumSize(minimumSize());
@@ -63,35 +65,83 @@ MainWindow::~MainWindow()
 
 void MainWindow::closeEvent(QCloseEvent*)
 {
+    emit disconnectFromDS();
+    emit stopStream();
     qApp->quit();
 }
 
-void MainWindow::disconnectedStream()
+void MainWindow::handleNtrStateChanged(Ntr::State state)
 {
-    ui->connectButton->setEnabled(true);
-    ui->dsIP->setEnabled(true);
-    ui->centralWidget->repaint();
+    switch (state) {
+    case Ntr::Connected:
+        debugging = true;
+        ui->connectButton->setText("Disconnect");
+        ui->dsIP->setEnabled(false);
+        break;
+    case Ntr::Disconnected:
+        debugging = false;
+        ui->connectButton->setText("Connect");
+        ui->dsIP->setEnabled(true);
+        break;
+    }
+}
+
+void MainWindow::handleStreamStateChanged(StreamWorker::State state)
+{
+    switch (state) {
+    case StreamWorker::Disconnected:
+        streaming = false;
+        if (!debugging)
+            ui->dsIP->setEnabled(true);
+        ui->jpegQuality->setEnabled(true);
+        ui->priFact->setEnabled(true);
+        ui->priMode->setEnabled(true);
+        ui->qosValue->setEnabled(true);
+        ui->streamButton->setText("Stream");
+        break;
+    case StreamWorker::Connected:
+        streaming = true;
+        ui->dsIP->setEnabled(false);
+        ui->jpegQuality->setEnabled(false);
+        ui->priFact->setEnabled(false);
+        ui->priMode->setEnabled(false);
+        ui->qosValue->setEnabled(false);
+        ui->streamButton->setText("Stop");
+        break;
+    }
 }
 
 void MainWindow::on_connectButton_clicked()
 {
-    ui->connectButton->setEnabled(false);
-    ui->dsIP->setEnabled(false);
-    ui->centralWidget->repaint();
+    if (!debugging) {
+        config.setValue(CFG_IP, ui->dsIP->text());
+        emit connectToDS();
+    } else {
+        emit disconnectFromDS();
+    }
+}
 
-    // Save options
-    s.setValue(CFG_IP, ui->dsIP->text());
-    s.setValue(CFG_JPGQUAL, ui->jpegQuality->value());
-    s.setValue(CFG_PRIFACT, ui->priFact->value());
-    s.setValue(CFG_PRIMODE, (bool)ui->priMode->currentIndex());
-    s.setValue(CFG_QOSVAL, ui->qosValue->value());
+void MainWindow::on_streamButton_clicked()
+{
+    if (!streaming) {
+        if (!debugging) on_connectButton_clicked();
+        ui->centralWidget->repaint();
 
-    emit ntrCommand(Ntr::RemotePlay);
+        // Save options
+        config.setValue(CFG_JPGQUAL, ui->jpegQuality->value());
+        config.setValue(CFG_PRIFACT, ui->priFact->value());
+        config.setValue(CFG_PRIMODE, (bool)ui->priMode->currentIndex());
+        config.setValue(CFG_QOSVAL, ui->qosValue->value());
+
+        emit ntrCommand(Ntr::RemotePlay);
+    } else {
+        emit stopStream();
+    }
 }
 
 void MainWindow::on_dsIP_returnPressed()
 {
-    on_connectButton_clicked();
+    on_streamButton_clicked();
 }
 
 void MainWindow::on_sendNfcPatch_clicked()
@@ -101,19 +151,19 @@ void MainWindow::on_sendNfcPatch_clicked()
 
 void MainWindow::on_tScale_valueChanged(double scale)
 {
-    s.setValue(CFG_TSCALE, scale);
+    config.setValue(CFG_TSCALE, scale);
     emit topSettingsChanged();
 }
 
 void MainWindow::on_bScale_valueChanged(double scale)
 {
-    s.setValue(CFG_BSCALE, scale);
+    config.setValue(CFG_BSCALE, scale);
     emit botSettingsChanged();
 }
 
 void MainWindow::on_smooth_stateChanged(int state)
 {
-    s.setValue(CFG_SMOOTH, state != 0);
+    config.setValue(CFG_SMOOTH, state != 0);
     emit topSettingsChanged();
     emit botSettingsChanged();
 }

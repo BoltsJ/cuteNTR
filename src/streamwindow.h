@@ -17,6 +17,7 @@
 #define STREAMWINDOW_H
 
 #include <QtGui>
+#include "streamworker.h"
 
 class StreamWindow : public QWindow
 {
@@ -33,6 +34,7 @@ public slots:
     void renderNow();
     void renderPixmap(QPixmap pixmap);
     void updateSettings();
+    void handleStreamStateChanged(StreamWorker::State state);
 
 protected:
     bool event(QEvent *event) Q_DECL_OVERRIDE;
@@ -46,6 +48,7 @@ private:
     QPixmap pixmap;
     QSize b_size;
     bool istop;
+    bool active;
     QSettings config;
     double scale;
     bool smooth;

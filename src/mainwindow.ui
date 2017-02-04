@@ -2,6 +2,14 @@
 <ui version="4.0">
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>356</width>
+    <height>368</height>
+   </rect>
+  </property>
   <property name="windowTitle">
    <string>cuteNTR</string>
   </property>
@@ -17,9 +25,9 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="connectButton">
+       <widget class="QPushButton" name="streamButton">
         <property name="text">
-         <string>Connect</string>
+         <string>Stream</string>
         </property>
        </widget>
       </item>
@@ -249,6 +257,37 @@
      </widget>
     </item>
     <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_9">
+      <item>
+       <spacer name="horizontalSpacer_8">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Debugger</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="connectButton">
+        <property name="text">
+         <string>Connect</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
        <spacer name="horizontalSpacer_3">
@@ -277,6 +316,11 @@
           <string>Universal</string>
          </property>
         </item>
+        <item>
+         <property name="text">
+          <string>Pokemon SM</string>
+         </property>
+        </item>
        </widget>
       </item>
       <item>
@@ -287,19 +331,6 @@
        </widget>
       </item>
      </layout>
-    </item>
-    <item>
-     <spacer name="verticalSpacer">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>20</width>
-        <height>40</height>
-       </size>
-      </property>
-     </spacer>
     </item>
    </layout>
   </widget>

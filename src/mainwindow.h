@@ -20,6 +20,7 @@
 #include <QSettings>
 #include <QtNetwork>
 #include "ntr.h"
+#include "streamworker.h"
 
 namespace Ui {
 class MainWindow;
@@ -37,18 +38,22 @@ protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
 
 public slots:
-    void disconnectedStream();
+    void handleNtrStateChanged(Ntr::State state);
+    void handleStreamStateChanged(StreamWorker::State state);
 
 signals:
+    void connectToDS();
+    void disconnectFromDS();
     void ntrCommand(Ntr::Command, QVector<uint32_t> a={}, uint32_t=0,
                     QByteArray="");
-    void initStream();
+    void stopStream();
     void sendNfcPatch(int);
     void topSettingsChanged();
     void botSettingsChanged();
 
 private slots:
     void on_connectButton_clicked();
+    void on_streamButton_clicked();
     void on_dsIP_returnPressed();
     void on_tScale_valueChanged(double scale);
     void on_bScale_valueChanged(double scale);
@@ -57,7 +62,10 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    QSettings s;
+    QSettings config;
+
+    bool debugging;
+    bool streaming;
 };
 
 #endif // MAINWINDOW_H

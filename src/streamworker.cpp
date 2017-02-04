@@ -27,16 +27,20 @@ StreamWorker::StreamWorker() :
 
 StreamWorker::~StreamWorker()
 {
-    rcv_sock->close();
-    delete rcv_sock;
+    if (rcv_sock != nullptr) {
+        rcv_sock->abort();
+        delete rcv_sock;
+    }
 }
 
 void StreamWorker::stream()
 {
     if (!rcv_sock->bind(QHostAddress::Any, 8001)) {
-        emit streamFailed();
+        qDebug() << "Couldn't connect to stream";
         return;
     }
+    emit stateChanged(StreamWorker::Connected);
+    abort = false;
     forever {
         QByteArray data;
         int ret = -1;
@@ -53,10 +57,16 @@ void StreamWorker::stream()
         } else {
             break;
         }
+        if (abort) break;
     }
-    rcv_sock->close();
+    rcv_sock->abort();
     qWarning() << "Stream disconnected";
-    emit streamFailed();
+    emit stateChanged(StreamWorker::Disconnected);
+}
+
+void StreamWorker::stopStream()
+{
+    abort = true;
 }
 
 int StreamWorker::readJPEG(QByteArray &jpeg)

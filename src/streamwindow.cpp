@@ -29,6 +29,7 @@ StreamWindow::StreamWindow(bool top, QWindow *parent) :
     m_update_pending(false),
     b_size(320, 240),
     istop(top),
+    active(false),
     config(qApp->applicationName())
 {
     create();
@@ -100,6 +101,24 @@ void StreamWindow::updateSettings()
     setMaximumSize(b_size*scale);
     setMinimumSize(b_size*scale);
     resize(b_size*scale);
+    if (active && scale > 0)
+        show();
+    else
+        hide();
+}
+
+void StreamWindow::handleStreamStateChanged(StreamWorker::State state)
+{
+    switch (state) {
+    case StreamWorker::Disconnected:
+        hide();
+        active = false;
+        break;
+    case StreamWorker::Connected:
+        active = true;
+        updateSettings();
+        break;
+    }
 }
 
 bool StreamWindow::event(QEvent *event)

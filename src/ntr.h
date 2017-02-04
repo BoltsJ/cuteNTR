@@ -46,7 +46,12 @@ public:
     };
     Q_ENUM(Command)
 
+    enum State { Disconnected, Connected };
+    Q_ENUM(State)
+
+
 signals:
+    void stateChanged(Ntr::State);
     void bufferFilled(QByteArray);
     void streamReady();
 
@@ -59,6 +64,7 @@ public slots:
 private slots:
     void sendHeartbeat();
     void readStream();
+    void handleSockStateChanged(QAbstractSocket::SocketState state);
 
 private:
     void sendPacket(uint32_t type, uint32_t cmd, QVector<uint32_t> args,
@@ -71,6 +77,7 @@ private:
     QTimer *heartbeat;
     QSettings config;
 
+    bool connected;
     uint32_t sequence;
     qint64 bufferlen;
     uint32_t recievedcmd;
