@@ -16,6 +16,10 @@
 #ifndef STREAMWORKER_H
 #define STREAMWORKER_H
 
+#if QT_VERSION < 0x050500
+#define Q_ENUM Q_ENUMS
+#endif
+
 #include <QObject>
 #include <QPixmap>
 #include <QtNetwork>
@@ -48,5 +52,9 @@ private:
 
     bool abort = false;
 };
+
+#if QT_VERSION < 0x050500
+#undef Q_ENUM
+#endif
 
 #endif // STREAMWORKER_H

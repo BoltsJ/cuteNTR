@@ -16,6 +16,10 @@
 #ifndef NTR_H
 #define NTR_H
 
+#if QT_VERSION < 0x050500
+#define Q_ENUM Q_ENUMS
+#endif
+
 #include <QObject>
 #include <QSettings>
 #include <QTimer>
@@ -83,5 +87,9 @@ private:
     uint32_t recievedcmd;
     QByteArray buffer;
 };
+
+#if QT_VERSION < 0x050500
+#undef Q_ENUM
+#endif
 
 #endif // NTR_H
