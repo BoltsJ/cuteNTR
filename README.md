@@ -31,7 +31,6 @@ sudo apt-get install cutentr
 ## Building
 
 Requirements:
-- Qt 5.5 or higher
 - qmake
 - libQt5Core
 - libQt5Gui
