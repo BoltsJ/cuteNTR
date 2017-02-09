@@ -208,5 +208,6 @@ void Ntr::handleSockStateChanged(QAbstractSocket::SocketState state) {
             qDebug() << "Connection lost";
         heartbeat->stop();
         connected = false;
+        emit stateChanged(Ntr::Disconnected);
     }
 }

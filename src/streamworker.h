@@ -16,13 +16,13 @@
 #ifndef STREAMWORKER_H
 #define STREAMWORKER_H
 
-#if QT_VERSION < 0x050500
-#define Q_ENUM Q_ENUMS
-#endif
-
 #include <QObject>
 #include <QPixmap>
 #include <QtNetwork>
+
+#if QT_VERSION < 0x050500
+#define Q_ENUM Q_ENUMS
+#endif
 
 class StreamWorker : public QObject
 {

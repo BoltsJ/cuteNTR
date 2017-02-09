@@ -16,15 +16,15 @@
 #ifndef NTR_H
 #define NTR_H
 
-#if QT_VERSION < 0x050500
-#define Q_ENUM Q_ENUMS
-#endif
-
 #include <QObject>
 #include <QSettings>
 #include <QTimer>
 #include <QtNetwork>
 #include <stdint.h>
+
+#if QT_VERSION < 0x050500
+#define Q_ENUM Q_ENUMS
+#endif
 
 class Ntr : public QObject
 {
