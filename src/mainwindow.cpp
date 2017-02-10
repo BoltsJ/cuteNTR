@@ -80,8 +80,9 @@ void MainWindow::handleNtrStateChanged(Ntr::State state)
         break;
     case Ntr::Disconnected:
         debugging = false;
+        if (!streaming)
+            ui->dsIP->setEnabled(true);
         ui->connectButton->setText("Connect");
-        ui->dsIP->setEnabled(true);
         break;
     }
     ui->connectButton->setEnabled(true);
@@ -119,6 +120,7 @@ void MainWindow::on_connectButton_clicked()
     if (!debugging) {
         config.setValue(CFG_IP, ui->dsIP->text());
         emit connectToDS();
+        QTimer::singleShot(2500, [=]{ emit ntrCommand(Ntr::PidList); });
     } else {
         emit disconnectFromDS();
     }
@@ -128,7 +130,8 @@ void MainWindow::on_streamButton_clicked()
 {
     ui->streamButton->setEnabled(false);
     if (!streaming) {
-        if (!debugging) on_connectButton_clicked();
+        config.setValue(CFG_IP, ui->dsIP->text());
+        if (!debugging) emit connectToDS();
         ui->centralWidget->repaint();
 
         // Save options

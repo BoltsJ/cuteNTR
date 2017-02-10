@@ -142,6 +142,9 @@
         <property name="maximum">
          <number>100</number>
         </property>
+        <property name="minimum">
+         <number>10</number>
+        </property>
        </widget>
       </item>
      </layout>
