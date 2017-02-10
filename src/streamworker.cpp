@@ -77,7 +77,10 @@ int StreamWorker::readJPEG(QByteArray &jpeg)
     int r;
 
     int cur_id, expkt = 0;
-    rcv_sock->waitForReadyRead();
+    if (!rcv_sock->waitForReadyRead(5000)) {
+        qWarning() << "Remote play socket timeout";
+        return -2;
+    }
     r = rcv_sock->readDatagram(buf.data(), 2000, &dsIP, &dsPort);
     if (r < 0) return -2;
     buf.truncate(r);
@@ -87,7 +90,10 @@ int StreamWorker::readJPEG(QByteArray &jpeg)
         if ((buf.at(1)&0xf0)==0x10) {
             break;
         }
-        rcv_sock->waitForReadyRead();
+        if (!rcv_sock->waitForReadyRead(5000)) {
+            qWarning() << "Remote play socket timeout";
+            return -2;
+        }
         buf.resize(2000);
         r = rcv_sock->readDatagram(buf.data(), 2000, &dsIP, &dsPort);
         if (r < 0) return -2;

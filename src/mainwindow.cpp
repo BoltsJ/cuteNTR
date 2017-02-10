@@ -84,6 +84,7 @@ void MainWindow::handleNtrStateChanged(Ntr::State state)
         ui->dsIP->setEnabled(true);
         break;
     }
+    ui->connectButton->setEnabled(true);
 }
 
 void MainWindow::handleStreamStateChanged(StreamWorker::State state)
@@ -109,10 +110,12 @@ void MainWindow::handleStreamStateChanged(StreamWorker::State state)
         ui->streamButton->setText("Stop");
         break;
     }
+    ui->streamButton->setEnabled(true);
 }
 
 void MainWindow::on_connectButton_clicked()
 {
+    ui->connectButton->setEnabled(false);
     if (!debugging) {
         config.setValue(CFG_IP, ui->dsIP->text());
         emit connectToDS();
@@ -123,6 +126,7 @@ void MainWindow::on_connectButton_clicked()
 
 void MainWindow::on_streamButton_clicked()
 {
+    ui->streamButton->setEnabled(false);
     if (!streaming) {
         if (!debugging) on_connectButton_clicked();
         ui->centralWidget->repaint();
