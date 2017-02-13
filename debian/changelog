@@ -1,7 +1,10 @@
-cutentr (0.2.0-1) yakkety; urgency=medium
+cutentr (0.3.0-1) yakkety; urgency=medium
 
   * Add Pokemon Sun and Moon NFC patch
+  * Improve feedback for sending the NFC patch
   * Update UI
+  * Windows can be hidden by setting scale to 0.0
+  * Print logfile path to stderr when starting
 
  -- Joseph R. Nosie <joenosie@openmailbox.org>  Sat, 4 Feb 2017 13:13:00 -0600
 

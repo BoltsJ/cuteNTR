@@ -36,7 +36,7 @@ StreamWorker::~StreamWorker()
 void StreamWorker::stream()
 {
     if (!rcv_sock->bind(QHostAddress::Any, 8001)) {
-        qDebug() << "Couldn't connect to stream";
+        qWarning() << "Couldn't bind stream socket";
         return;
     }
     emit stateChanged(StreamWorker::Connected);

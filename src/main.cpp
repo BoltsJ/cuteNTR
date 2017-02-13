@@ -35,12 +35,14 @@ int main(int argc, char *argv[])
         << " --\n";
     file.close();
 
+    qDebug() << "Logfile:" << logfile;
+
     qInstallMessageHandler(messageHandler);
 
     QApplication a(argc, argv);
     a.setApplicationName("cutentr");
     a.setApplicationDisplayName("cuteNTR");
-    a.setApplicationVersion("v0.1.1");
+    a.setApplicationVersion("v0.3.0");
 
     MainWindow w;
     StreamWindow top(true);
