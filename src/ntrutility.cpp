@@ -15,6 +15,7 @@
  */
 #include "ntrutility.h"
 #include "ntr.h"
+#include <QMessageBox>
 
 NtrUtility::NtrUtility(QObject *parent) : QObject(parent)
 {
@@ -66,8 +67,13 @@ void NtrUtility::writeNfcPatch(int type)
         break;
     }
     len = patch.length();
-    if (pid != 0)
+    if (pid != 0) {
         emit ntrCommand(Ntr::WriteMem, {pid, offset, len}, len, patch);
+    } else {
+        QString msg("Can't find pid. Make sure the title is running, then");
+        msg += " wait and try again";
+        QMessageBox::warning(0, "Warning", msg);
+    }
 }
 
 void NtrUtility::handleInfo(QByteArray info)

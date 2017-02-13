@@ -64,6 +64,9 @@ public slots:
     void disconnectFromDS();
     void sendCommand(Ntr::Command command, QVector<uint32_t> args={},
                      uint32_t len=0, QByteArray data="");
+#if QT_VERSION < 0x050400
+    void getPidList() { sendCommand(Ntr::PidList); }
+#endif
 
 private slots:
     void sendHeartbeat();

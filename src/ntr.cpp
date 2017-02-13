@@ -203,11 +203,22 @@ void Ntr::readToBuf()
 }
 
 void Ntr::handleSockStateChanged(QAbstractSocket::SocketState state) {
-    if (state == QAbstractSocket::UnconnectedState) {
+    switch (state) {
+    case QAbstractSocket::UnconnectedState:
         if (connected)
             qDebug() << "Connection lost";
         heartbeat->stop();
         connected = false;
         emit stateChanged(Ntr::Disconnected);
+        break;
+    case QAbstractSocket::ConnectedState:
+#if QT_VERSION >= 0x050400
+        QTimer::singleShot(2500, [=]{ sendCommand(Ntr::PidList); });
+#else
+        QTimer::singleShot(2500, this, SLOT(getPidList()));
+#endif
+        break;
+    default:
+        break;
     }
 }

@@ -120,7 +120,6 @@ void MainWindow::on_connectButton_clicked()
     if (!debugging) {
         config.setValue(CFG_IP, ui->dsIP->text());
         emit connectToDS();
-        QTimer::singleShot(2500, [=]{ emit ntrCommand(Ntr::PidList); });
     } else {
         emit disconnectFromDS();
     }
