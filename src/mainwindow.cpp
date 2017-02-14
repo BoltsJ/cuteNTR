@@ -39,7 +39,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     config(qApp->applicationName()),
-    debugging(false)
+    debugging(false),
+    streaming(false)
 {
     ui->setupUi(this);
 
