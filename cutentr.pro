@@ -7,7 +7,7 @@
 TARGET = cutentr
 TEMPLATE = subdirs
 SUBDIRS += src
-VERSION = -0.3.0
+VERSION = -0.3.1
 
 lessThan(QT_MAJOR_VERSION, 5): error("Qt 5.5 or greater is required.")
 

@@ -1,3 +1,9 @@
+cutentr (0.3.1-1) yakkety; urgency=medium
+
+  * Fix macOS builds (#6)
+
+ -- Joseph R. Nosie <joenosie@openmailbox.org>  Sat, 4 Feb 2017 13:13:00 -0600
+
 cutentr (0.3.0-1) yakkety; urgency=medium
 
   * Add Pokemon Sun and Moon NFC patch
