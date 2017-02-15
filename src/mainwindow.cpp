@@ -137,7 +137,7 @@ void MainWindow::on_streamButton_clicked()
         // Save options
         config.setValue(CFG_JPGQUAL, ui->jpegQuality->value());
         config.setValue(CFG_PRIFACT, ui->priFact->value());
-        config.setValue(CFG_PRIMODE, (bool)ui->priMode->currentIndex());
+        config.setValue(CFG_PRIMODE, ui->priMode->currentIndex());
         config.setValue(CFG_QOSVAL, ui->qosValue->value());
 
         emit ntrCommand(Ntr::RemotePlay);
