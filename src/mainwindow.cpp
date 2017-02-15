@@ -24,7 +24,7 @@ const int    DEF_JPGQUAL = 80;
 const char*  CFG_PRIFACT = "priorityFactor";
 const int    DEF_PRIFACT = 5;
 const char*  CFG_PRIMODE = "priorityMode";
-const bool   DEF_PRIMODE = true;
+const int    DEF_PRIMODE = 1;
 const char*  CFG_QOSVAL  = "qosValue";
 const int    DEF_QOSVAL  = 105;
 const char*  CFG_TSCALE  = "topScale";
@@ -48,7 +48,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->dsIP->setText(config.value(CFG_IP, DEF_IP).toString());
     ui->qosValue->setValue(config.value(CFG_QOSVAL, DEF_QOSVAL).toInt());
     ui->priMode->setCurrentIndex(
-            config.value(CFG_PRIMODE, DEF_PRIMODE).toBool());
+            config.value(CFG_PRIMODE, DEF_PRIMODE).toInt());
     ui->priFact->setValue(config.value(CFG_PRIFACT, DEF_PRIFACT).toInt());
     ui->jpegQuality->setValue(config.value(CFG_JPGQUAL, DEF_JPGQUAL).toInt());
     ui->tScale->setValue(config.value(CFG_TSCALE, DEF_TSCALE).toFloat());

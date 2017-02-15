@@ -18,7 +18,7 @@
 namespace {
 const char* CFG_IP      = "ipAddress";
 const char* CFG_PRIMODE = "priorityMode";
-const bool  DEF_PRIMODE = true;
+const int   DEF_PRIMODE = 1;
 const char* CFG_PRIFACT = "priorityFactor";
 const int   DEF_PRIFACT = 5;
 const char* CFG_JPGQUAL = "jpegQuality";
