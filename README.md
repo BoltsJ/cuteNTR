@@ -70,7 +70,8 @@ Executing(%clean): /bin/sh -e /var/tmp/rpm-tmp.dL0Dq6
 + cd cuteNTR
 + /usr/bin/rm -rf /root/rpmbuild/BUILDROOT/cuteNTR-0.3.1-1.el7.centos.x86_64
 + exit 0
-[root@centos-7-amd64 SRCDIR]# ls -l ~/rpmbuild/RPMS/x86_64/total 716
+[root@centos-7-amd64 SRCDIR]# ls -l ~/rpmbuild/RPMS/x86_64/
+total 716
 -rw-r--r--. 1 root root  47332 Feb 20 00:12 cuteNTR-0.3.1-1.el7.centos.x86_64.rpm
 -rw-r--r--. 1 root root 681304 Feb 20 00:12 cuteNTR-debuginfo-0.3.1-1.el7.centos.x86_64.rpm
 [root@centos-7-amd64 SRCDIR]# 
