@@ -43,8 +43,8 @@ $ make
 $ sudo make install
 $ cutentr
 ```
-### CentOS 7 (CentOS 6 requires you install a newer version of GLIBC side by side with OS version.)
-Requirements
+### CentOS 7 
+Requirements(yum install these):
 - gcc-c++
 - qt5-qtbase
 - qt5-qtbase-gui
@@ -52,6 +52,7 @@ Requirements
 - rpm-build
 
 ```
+[root@centos-7-amd64 SRCDIR]# mkdir -p ~/rpmbuild/SOURCES
 [root@centos-7-amd64 SRCDIR]# tar -zcf ~/rpmbuild/SOURCES/cuteNTR.tar.gz cuteNTR 
 [root@centos-7-amd64 SRCDIR]# rpmbuild -bb cuteNTR/rpm/cuteNTR.spec 
 Executing(%prep): /bin/sh -e /var/tmp/rpm-tmp.CgzRqg
