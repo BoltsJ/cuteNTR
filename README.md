@@ -52,29 +52,10 @@ Requirements(yum install these):
 - rpm-build
 
 ```
-[root@centos-7-amd64 SRCDIR]# mkdir -p ~/rpmbuild/SOURCES
-[root@centos-7-amd64 SRCDIR]# tar -zcf ~/rpmbuild/SOURCES/cuteNTR.tar.gz cuteNTR 
-[root@centos-7-amd64 SRCDIR]# rpmbuild -bb cuteNTR/rpm/cuteNTR.spec 
-Executing(%prep): /bin/sh -e /var/tmp/rpm-tmp.CgzRqg
-+ umask 022
-+ cd /root/rpmbuild/BUILD
-+ cd /root/rpmbuild/BUILD
-+ rm -rf cuteNTR
-[...]
-Checking for unpackaged file(s): /usr/lib/rpm/check-files /root/rpmbuild/BUILDROOT/cuteNTR-0.3.1-1.el7.centos.x86_64
-Wrote: /root/rpmbuild/RPMS/x86_64/cuteNTR-0.3.1-1.el7.centos.x86_64.rpm
-Wrote: /root/rpmbuild/RPMS/x86_64/cuteNTR-debuginfo-0.3.1-1.el7.centos.x86_64.rpm
-Executing(%clean): /bin/sh -e /var/tmp/rpm-tmp.dL0Dq6
-+ umask 022
-+ cd /root/rpmbuild/BUILD
-+ cd cuteNTR
-+ /usr/bin/rm -rf /root/rpmbuild/BUILDROOT/cuteNTR-0.3.1-1.el7.centos.x86_64
-+ exit 0
-[root@centos-7-amd64 SRCDIR]# ls -l ~/rpmbuild/RPMS/x86_64/
-total 716
--rw-r--r--. 1 root root  47332 Feb 20 00:12 cuteNTR-0.3.1-1.el7.centos.x86_64.rpm
--rw-r--r--. 1 root root 681304 Feb 20 00:12 cuteNTR-debuginfo-0.3.1-1.el7.centos.x86_64.rpm
-[root@centos-7-amd64 SRCDIR]# 
+$ git clone https://github.com/BoltsJ/cuteNTR.git
+$ mkdir -p ~/rpmbuild/{SOURCES,RPMS,SPECS,BUILD,BUILDROOT,SRPMS}
+$ tar -zcf ~/rpmbuild/SOURCES/cuteNTR.tar.gz cuteNTR 
+$ rpmbuild -bb cuteNTR/rpm/cuteNTR.spec 
 ```
 
 ## Copyright
