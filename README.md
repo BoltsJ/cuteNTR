@@ -54,8 +54,8 @@ Requirements(yum install these):
 ```
 $ git clone https://github.com/BoltsJ/cuteNTR.git
 $ mkdir -p ~/rpmbuild/{SOURCES,RPMS,SPECS,BUILD,BUILDROOT,SRPMS}
-$ tar -zcf ~/rpmbuild/SOURCES/cuteNTR.tar.gz cuteNTR 
-$ rpmbuild -bb cuteNTR/rpm/cuteNTR.spec 
+$ tar -zcf ~/rpmbuild/SOURCES/cuteNTR.tar.gz cuteNTR
+$ rpmbuild -bb cuteNTR/rpm/cutentr.spec 
 ```
 
 ## Copyright

@@ -1,15 +1,15 @@
-Name: cuteNTR	
+Name: cutentr
 Version: 0.3.1
 Release: 1%{?dist}
-Summary: N3DS streaming client	
+Summary: N3DS streaming client
 
-Group: X11		
-License: GPL	
-URL: https://gitlab.com/BoltsJ/cuteNTR	
+Group: X11
+License: GPL
+URL: https://gitlab.com/BoltsJ/cuteNTR
 Source0: cuteNTR.tar.gz
 
 BuildRequires: git, gcc-c++, qt5-qtbase, qt5-qtbase-gui, qt5-qtbase-devel, rpm-build
-Requires: qt5-qtbase 
+Requires: qt5-qtbase
 
 %description
 N3DS streaming client
@@ -22,7 +22,7 @@ N3DS streaming client
 %setup -q -n cuteNTR
 # qmake-qt5 isn't updating the Makefile if it already exists.
 rm -f Makefile src/Makefile
-qmake-qt5 PREFIX=/usr cutentr.pro -o Makefile 
+qmake-qt5 PREFIX=/usr cutentr.pro -o Makefile
 
 %build
 make
