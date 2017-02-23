@@ -27,36 +27,12 @@ sudo add-apt-repository ppa:joenosie/3ds
 sudo apt-get update
 sudo apt-get install cutentr
 ```
+- Fedora 25 RPM and source RPM available on the
+  [tags](https://gitlab.com/BoltsJ/cuteNTR/tags) page.
+- Debian and Raspbian Jessie packages are available on the
+  [tags](https://gitlab.com/BoltsJ/cuteNTR/tags) page.
 
-## Building
-### Debian
-Requirements:
-- qmake
-- libQt5Core
-- libQt5Gui
-- libQt5Widgets
-- libQt5Network
-
-```
-$ qmake
-$ make
-$ sudo make install
-$ cutentr
-```
-### CentOS 7 
-Requirements(yum install these):
-- gcc-c++
-- qt5-qtbase
-- qt5-qtbase-gui
-- qt5-qtbase-devel
-- rpm-build
-
-```
-$ git clone https://github.com/BoltsJ/cuteNTR.git
-$ mkdir -p ~/rpmbuild/{SOURCES,RPMS,SPECS,BUILD,BUILDROOT,SRPMS}
-$ tar -zcf ~/rpmbuild/SOURCES/cuteNTR.tar.gz cuteNTR
-$ rpmbuild -bb cuteNTR/rpm/cutentr.spec 
-```
+## [Building](https://gitlab.com/BoltsJ/cuteNTR/wikis/building)
 
 ## Copyright
 
