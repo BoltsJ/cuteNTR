@@ -6,7 +6,7 @@ Summary: N3DS streaming client
 Group: X11
 License: GPL
 URL: https://gitlab.com/BoltsJ/cuteNTR
-Source0: cuteNTR.tar.gz
+Source0: %{name}-%{version}.tar.gz
 
 BuildRequires: git, gcc-c++, qt5-qtbase, qt5-qtbase-gui, qt5-qtbase-devel, rpm-build
 Requires: qt5-qtbase
@@ -19,30 +19,26 @@ N3DS streaming client
 
 
 %prep
-%setup -q -n cuteNTR
+%setup -q -n %{name}-%{version}
 # qmake-qt5 isn't updating the Makefile if it already exists.
 rm -f Makefile src/Makefile
-qmake-qt5 PREFIX=/usr cutentr.pro -o Makefile
 
 %build
+%{qmake_qt5} PREFIX=%{_prefix}
 make
 
 %install
 make install INSTALL_ROOT=%{buildroot}
 
-mkdir -p $RPM_BUILD_ROOT/usr/share/applications/
-mkdir -p $RPM_BUILD_ROOT/usr/share/icons/
-mkdir -p $RPM_BUILD_ROOT/usr/share/pixmaps/
-
-install -m 644 setup/gui/cutentr.desktop $RPM_BUILD_ROOT/usr/share/applications/cutentr.desktop
-install -m 644 setup/gui/cutentr.svg $RPM_BUILD_ROOT/usr/share/icons/cutentr.svg
-install -m 644 resources/linux/icon/cutentr.xpm $RPM_BUILD_ROOT/usr/share/pixmaps/cutentr.xpm
+desktop-file-install \
+    --dir=%{buildroot}%{_datadir}/applications \
+    %{buildroot}%{_datadir}/applications/cutentr.desktop
 
 %files
-/usr/bin/cutentr
-/usr/share/applications/cutentr.desktop
-/usr/share/icons/cutentr.svg
-/usr/share/pixmaps/cutentr.xpm
+%{_bindir}/cutentr
+%{_datadir}/applications/cutentr.desktop
+%{_datadir}/icons/cutentr.svg
+%{_datadir}/pixmaps/cutentr.xpm
 
 %changelog
 * Mon Feb 20 2017 James J <jayninja@fazey.org> 0.3.1-1
